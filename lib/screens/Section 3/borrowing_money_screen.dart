@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -49,6 +50,30 @@ class _BorrowingMoneyScreenState extends State<BorrowingMoneyScreen> {
     DataBase().setShowPage(25);
     Navigator.pushNamed(context, '/major_life_intro/');
   }
+
+  fetchBorrowingMoney() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("borrowingMoney")) {
+      if(prefs.getString("borrowingMoney") == "I believe in zero debt") {
+        _reply = Options.Option1;
+      } else if(prefs.getString("borrowingMoney") == "It’s okay to borrow money to acquire appreciating assets") {
+        _reply = Options.Option2;
+      } else if(prefs.getString("borrowingMoney") == "Borrow for anything that is tax efficient") {
+        _reply = Options.Option3;
+      } else if(prefs.getString("borrowingMoney") == "I haven’t thought about it seriously") {
+        _reply = Options.Option4;
+      } 
+    }
+
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchBorrowingMoney();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;

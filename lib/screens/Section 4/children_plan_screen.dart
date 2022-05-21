@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -54,7 +55,32 @@ class _ChildrenPlanScreenState extends State<ChildrenPlanScreen> {
 
     DataBase().setShowPage(27);
     DataBase().setChildrenPlan(option);
-    Navigator.pushNamed(context, '/first_home/');
+    Navigator.pushNamed(context, '/feed/');
+  }
+
+  fetchChildrenPlan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("childrenPlan")) {
+      if(prefs.getString("childrenPlan") == "Don’t want") {
+        _reply = Options.Option1;
+      } else if(prefs.getString("childrenPlan") == "Want someday") {
+        _reply = Options.Option2;
+      }  else if(prefs.getString("childrenPlan") == "Have and want more") {
+        _reply = Options.Option3;
+      } else if(prefs.getString("childrenPlan") == "Have and don’t want more") {
+        _reply = Options.Option4;
+      } else if(prefs.getString("childrenPlan") == "Not sure yet") {
+        _reply = Options.Option5;
+      } 
+    }
+
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchChildrenPlan();
+    super.initState();
   }
 
   @override

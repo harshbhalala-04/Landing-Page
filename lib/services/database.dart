@@ -38,7 +38,7 @@ class DataBase {
         .update({"showPage": index});
   }
 
-  void setAllImages(List<String> imgUrls) {
+  void setAllImages(List<String> imgUrls) async {
     if (imgUrls[0] != "") {
       FirebaseFirestore.instance
           .collection("users")
@@ -51,16 +51,22 @@ class DataBase {
         tmpUrls.add(imgUrls[i]);
       }
     }
+    print(tmpUrls);
+    print(tmpUrls);
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"imgUrls": tmpUrls});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList("images", tmpUrls);
   }
 
   void setName(String name) async {
     FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
       "name": name,
     });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("name", name);
   }
 
   void setGenderAndInterested(String gender, String interested) async {
@@ -68,150 +74,198 @@ class DataBase {
         .collection("users")
         .doc(user!.uid)
         .update({"gender": gender, "interestedGender": interested});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("gender", gender);
+    prefs.setString("interestedGender", interested);
   }
 
-  // void setGender(String gender) {
-  //    FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
-  //     "gender": gender,
-  //   });
-  // }
-
-  // void setInterestedGender(String interestedGender) {
-  //    FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
-  //     "interestedGender": interestedGender,
-  //   });
-  // }
-
-  void setHomeTown(String hometown) {
+  void setIncomeUse(double val1, double val2, double val3, double val4) async {
+    Map<String, dynamic> incomeUseMap = {
+      "Necessities": val1,
+      "Spending": val2,
+      "Savings": val3,
+      "Investments": val4
+    };
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
-        .update({"hometown": hometown});
+        .update({"incomeUse": incomeUseMap});
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble("Necessities", val1);
+    prefs.setDouble("Spending", val1);
+    prefs.setDouble("Savings", val1);
+    prefs.setDouble("Investments", val1);
   }
 
-  void setCurrentLocation(String currentLocation) {
+  
+
+  void setLocation(String hometown, String currentCity) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
-        .update({"currentLocation": currentLocation});
+        .update({"hometown": hometown, "currentCity": currentCity});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("hometown", hometown);
+    prefs.setString("currentCity", currentCity);
   }
 
-  void setHeight(String height) {
+  void setHeight(String height, String feet, String inches) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"height": height});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("feet", feet);
+    prefs.setString("inches", inches);
   }
 
-  void setMotherToungue(String motherToungue) {
+  void setMotherToungue(String motherToungue) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"motherToungue": motherToungue});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("motherToungue", motherToungue);
   }
 
-  void setAcademicBackground(String academicBackground) {
+  void setAcademicBackground(String academicBackground) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"academicBackground": academicBackground});
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("academicBackground", academicBackground);
   }
 
-  void setIndustry(String industry) {
+  void setIndustry(String industry) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"industry": industry});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("industry", industry);
   }
 
-  void setIncome(String income) {
+  void setIncome(String income) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"income": income});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("income", income);
   }
 
-  void setQualification(String qualification) {
+  void setQualification(String qualification) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"qualification": qualification});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("qualification", qualification);
   }
 
-  void setIncomeSource(String incomeSource) {
+  void setIncomeSource(String incomeSource) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"incomeSource": incomeSource});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("incomeSource", incomeSource);
   }
 
-  void setRelationshipStatus(String relationshipStatus) {
+  void setRelationshipStatus(String relationshipStatus) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"relationshipStatus": relationshipStatus});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("relationshipStatus", relationshipStatus);
   }
 
-  void setInvestment(List<String> investment) {
+  void setInvestment(List<String> investment) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"investment": investment});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList("investment", investment);
   }
 
-  void setDOB(String date, String month, String year) {
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .update({"birthdate": date + "/" + month + "/" + year});
+  void setDOB(String date, String month, String year) async {
+    FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
+      "birthdate": date + "/" + month + "/" + year,
+      "date": date,
+      "month": month,
+      "year": year
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("date", date);
+    prefs.setString("month", month);
+    prefs.setString("year", year);
   }
 
-  void setInvestInStock(String stockInvest) {
+  void setInvestInStock(String stockInvest) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"stockInvest": stockInvest});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("stockInvest", stockInvest);
   }
 
-  void setCREDMember(String member) {
+  void setCREDMember(String member) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"member": member});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("member", member);
   }
 
-  void setEmergencyFund(String emergencyFund) {
+  void setEmergencyFund(String emergencyFund) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"emergencyFund": emergencyFund});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("emergencyFund", emergencyFund);
   }
 
-  void setBorrowingMoney(String borrowingMoney) {
+  void setBorrowingMoney(String borrowingMoney) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"borrowingMoney": borrowingMoney});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("borrowingMoney", borrowingMoney);
   }
 
-  void setChildrenPlan(String childrenPlan) {
+  void setChildrenPlan(String childrenPlan) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"childrenPlan": childrenPlan});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("childrenPlan", childrenPlan);
   }
 
-  void setFirstHome(String firstHome) {
+  void setFirstHome(String firstHome) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"firstHome": firstHome});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("firstHome", firstHome);
   }
 
-  void setWedding(String wedding) {
+  void setWedding(String wedding) async {
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .update({"wedding": wedding});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("wedding", wedding);
   }
 }

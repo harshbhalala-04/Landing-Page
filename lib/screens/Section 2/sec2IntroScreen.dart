@@ -17,7 +17,7 @@ class Sec2IntroScreen extends StatefulWidget {
 class _Sec2IntroScreenState extends State<Sec2IntroScreen> {
   navigationFunction() {
     DataBase().setShowPage(13);
-    Navigator.pushNamed(context, '/academic_background/');
+    Navigator.pushNamed(context, '/industry/');
   }
 
   @override

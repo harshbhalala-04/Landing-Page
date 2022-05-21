@@ -4,6 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -102,7 +103,23 @@ class _IndustryScreenState extends State<IndustryScreen> {
     }
     DataBase().setShowPage(16);
     DataBase().setIndustry(industryAns);
-    Navigator.pushNamed(context, '/income_range/');
+    Navigator.pushNamed(context, '/highest_qualification/');
+  }
+
+  fetchIndustry() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("industry")) {
+      industryAns = prefs.getString("industry")!;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchIndustry();
+    super.initState();
   }
 
   @override
@@ -198,6 +215,7 @@ class _IndustryScreenState extends State<IndustryScreen> {
                   child: DropdownSearch<String>(
                     mode: Mode.MENU,
                     showSelectedItems: true,
+                    selectedItem: industryAns,
                     showSearchBox: true,
                     items: industryList,
                      searchFieldProps: TextFieldProps(

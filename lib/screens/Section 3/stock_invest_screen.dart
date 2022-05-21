@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gmlandingpage/screens/Section%203/borrowing_money_screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -47,7 +49,27 @@ class _StockInvestScreenState extends State<StockInvestScreen> {
     // DataBase().setGender(gender);
     DataBase().setInvestInStock(stockInvest);
     
-    Navigator.pushNamed(context, '/cred/');
+    Navigator.pushNamed(context, '/emergency_fund/');
+  }
+  fetchStockInvest() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("stockInvest")) {
+      if(prefs.getString("stockInvest") == "Yes, I’m a veteran.") {
+        _reply = StockInvest.Yes;
+      } else if(prefs.getString("stockInvest") == "Started recently") {
+        _reply = StockInvest.Started;
+      }  else if(prefs.getString("stockInvest") == "No") {
+        _reply = StockInvest.No;
+      } 
+    }
+
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchStockInvest();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

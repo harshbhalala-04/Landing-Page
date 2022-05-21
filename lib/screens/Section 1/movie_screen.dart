@@ -218,7 +218,9 @@ class _MovieScreenState extends State<MovieScreen> {
                   });
                 },
                 leading: isMovieSelected[0]
-                    ? Image.network(selectedMovies[0].poster!)
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(selectedMovies[0].poster!))
                     : SvgPicture.asset("assets/images/plus.svg"),
                 title: isMovieSelected[0]
                     ? Text(selectedMovies[0].title!)
@@ -243,7 +245,9 @@ class _MovieScreenState extends State<MovieScreen> {
                         },
                         icon: Icon(Icons.cancel),
                       )
-                    : SizedBox(height: 0,),
+                    : SizedBox(
+                        height: 0,
+                      ),
               ),
               SizedBox(
                 height: 20,
@@ -278,7 +282,9 @@ class _MovieScreenState extends State<MovieScreen> {
                   });
                 },
                 leading: isMovieSelected[1]
-                    ? Image.network(selectedMovies[1].poster!)
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(selectedMovies[1].poster!))
                     : SvgPicture.asset("assets/images/plus.svg"),
                 title: isMovieSelected[1]
                     ? Text(selectedMovies[1].title!)
@@ -316,7 +322,6 @@ class _MovieScreenState extends State<MovieScreen> {
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
                     )),
-                    
                     context: context,
                     isDismissible: true,
                     isScrollControlled: true,
@@ -340,7 +345,9 @@ class _MovieScreenState extends State<MovieScreen> {
                   });
                 },
                 leading: isMovieSelected[2]
-                    ? Image.network(selectedMovies[2].poster!)
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(selectedMovies[2].poster!))
                     : SvgPicture.asset("assets/images/plus.svg"),
                 title: isMovieSelected[2]
                     ? Text(selectedMovies[2].title!)
@@ -365,104 +372,16 @@ class _MovieScreenState extends State<MovieScreen> {
                         },
                         icon: Icon(Icons.cancel),
                       )
-                    : SizedBox(height: 0,),
+                    : SizedBox(
+                        height: 0,
+                      ),
               ),
-              // Expanded(
-              //   child: SingleChildScrollView(
-              //     child: Column(
-              //       children: [
-              //         isSearchString
-              //             ? ListView.builder(
-              //                 physics: const NeverScrollableScrollPhysics(),
-              //                 shrinkWrap: true,
-              //                 itemCount: movieList.length,
-              //                 itemBuilder: (ctx, index) {
-              //                   return Padding(
-              //                     padding: const EdgeInsets.all(20),
-              //                     child: Center(
-              //                       child: Container(
-              //                         width: deviceSize.width < 800
-              //                             ? deviceSize.width
-              //                             : deviceSize.width / 4,
-              //                         child: InkWell(
-              //                           onTap: () {
-              //                             int flag = 0;
-              //                             for (int i = 0;
-              //                                 i < selectedMovies.length;
-              //                                 i++) {
-              //                               if (selectedMovies[i].imdbID ==
-              //                                   movieList[index].imdbID) {
-              //                                 flag = 1;
-              //                               }
-              //                             }
-              //                             if (flag == 0) {
-              //                               selectedMovies
-              //                                   .add(movieList[index]);
-              //                             }
-              //                             searchController.text = "";
-              //                             isSearchString = false;
-              //                             searchQuery = "";
-              //                             movieList = [];
-              //                             setState(() {});
-              //                           },
-              //                           child: ListTile(
-              //                             leading: Image.network(
-              //                                 movieList[index].poster!),
-              //                             title: Text(movieList[index].title!),
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   );
-              //                 })
-              //             : Container(),
-              //         isSearchString
-              //             ? Container()
-              //             : ListView.builder(
-              //                 physics: const NeverScrollableScrollPhysics(),
-              //                 shrinkWrap: true,
-              //                 itemCount: selectedMovies.length,
-              //                 itemBuilder: (ctx, index) {
-              //                   return Padding(
-              //                     padding: const EdgeInsets.all(20),
-              //                     child: Center(
-              //                       child: Container(
-              //                         width: deviceSize.width < 800
-              //                             ? deviceSize.width
-              //                             : deviceSize.width / 4,
-              //                         child: ListTile(
-              //                           leading: Image.network(
-              //                               selectedMovies[index].poster!),
-              //                           title:
-              //                               Text(selectedMovies[index].title!),
-              //                           subtitle:
-              //                               Text(selectedMovies[index].year!),
-              //                           trailing: IconButton(
-              //                             icon: Icon(Icons.cancel),
-              //                             onPressed: () {
-              //                               selectedMovies.removeAt(index);
-              //                               setState(() {});
-              //                             },
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   );
-              //                 }),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+
               deviceSize.width > 800 ? Spacer() : Container(),
               deviceSize.width > 800
                   ? Button(
                       text: "Continue", navigationFunction: navigationFunction)
                   : Container(),
-              // deviceSize.width > 800
-              //     ? Button(
-              //         text: "Continue", navigationFunction: navigationFunction)
-              //     : Container(),
-              // Button(text: "Continue", navigationFunction: navigationFunction)
             ],
           ),
         ),
@@ -472,26 +391,6 @@ class _MovieScreenState extends State<MovieScreen> {
           : SizedBox(),
     );
   }
-
-  // getMovieRecords(String query) async {
-  //   try {
-  //     final response = await http.get(Uri.parse(
-  //         "https://www.omdbapi.com/?s=$query&apikey=40ee02cf&page=1"));
-
-  //     final items = jsonDecode(response.body)['Search'];
-
-  //     if (items != null) {
-  //       for (int i = 0; i < items.length; i++) {
-  //         print(items[i]);
-  //         movieList.add(MovieModel.fromApi(items[i]));
-  //       }
-  //     }
-  //     print(movieList);
-  //     setState(() {});
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
 }
 
 class MyBottomSheetWidget extends StatefulWidget {

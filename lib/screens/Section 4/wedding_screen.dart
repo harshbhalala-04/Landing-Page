@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -49,7 +50,29 @@ class _WeddingScreenState extends State<WeddingScreen> {
     DataBase().setAllAnswerTrue();
     DataBase().setShowPage(29);
 
-    Navigator.pushNamed(context, '/feed/');
+    Navigator.pushNamed(context, '/first_home/');
+  }
+
+  fetchWedding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("wedding")) {
+      if(prefs.getString("wedding") == "Lavish") {
+        _reply = Options.Option1;
+      } else if(prefs.getString("wedding") == "Moderate") {
+        _reply = Options.Option2;
+      }  else if(prefs.getString("wedding") == "Not sure") {
+        _reply = Options.Option3;
+      } 
+    }
+    setState(() {
+      
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchWedding();
+    super.initState();
   }
 
   @override
@@ -61,9 +84,8 @@ class _WeddingScreenState extends State<WeddingScreen> {
           ? AppBar(
               backgroundColor: Colors.white,
               elevation: 0,
-
               leading: Container(
-                 margin: EdgeInsets.only(top: 15),
+                margin: EdgeInsets.only(top: 15),
                 child: IconButton(
                   icon: Icon(Icons.arrow_back_ios_new),
                   onPressed: () {
@@ -155,16 +177,21 @@ class _WeddingScreenState extends State<WeddingScreen> {
                           });
                         },
                       ),
-                      Text('Lavish',style: TextStyle(
+                      Text(
+                        'Lavish',
+                        style: TextStyle(
                           fontSize: 18,
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
-                        ),),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 5,),
+              SizedBox(
+                height: 5,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: InkWell(
@@ -185,16 +212,21 @@ class _WeddingScreenState extends State<WeddingScreen> {
                           });
                         },
                       ),
-                      Text('Moderate',style: TextStyle(
+                      Text(
+                        'Moderate',
+                        style: TextStyle(
                           fontSize: 18,
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
-                        ),),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 5,),
+              SizedBox(
+                height: 5,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: InkWell(
@@ -215,11 +247,14 @@ class _WeddingScreenState extends State<WeddingScreen> {
                           });
                         },
                       ),
-                      Text('Not sure',style: TextStyle(
+                      Text(
+                        'Not sure',
+                        style: TextStyle(
                           fontSize: 18,
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
-                        ),),
+                        ),
+                      ),
                     ],
                   ),
                 ),

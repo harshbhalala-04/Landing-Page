@@ -45,9 +45,12 @@ class _RelationshipStatusScreenState extends State<RelationshipStatusScreen> {
       });
     }
     DataBase().setShowPage(6);
-    DataBase().setRelationshipStatus(relationshipStatus);
+    // DataBase().setRelationshipStatus(relationshipStatus);
     Navigator.pushNamed(context, '/birth_date/');
   }
+
+ 
+
   
   @override
   Widget build(BuildContext context) {

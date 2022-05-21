@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -45,6 +46,24 @@ class _CredScreenState extends State<CredScreen> {
     
     
     Navigator.pushNamed(context, '/emergency_fund/');
+  }
+  fetchCRED() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("member")) {
+      if(prefs.getString("member") == "Yes") {
+        _reply = Member.Yes;
+      } else if(prefs.getString("member") == "No") {
+        _reply = Member.No;
+      } 
+    }
+
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchCRED();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

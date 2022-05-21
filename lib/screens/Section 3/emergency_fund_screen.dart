@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -44,6 +45,24 @@ class _EmergencyFundScreenState extends State<EmergencyFundScreen> {
     DataBase().setShowPage(24);
     DataBase().setEmergencyFund(option);
     Navigator.pushNamed(context, '/borrowing_money/');
+  }
+   fetchEmergencyFund() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("emergencyFund")) {
+      if(prefs.getString("emergencyFund") == "Yes") {
+        _reply = Option.Yes;
+      } else if(prefs.getString("emergencyFund") == "No") {
+        _reply = Option.No;
+      } 
+    }
+
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchEmergencyFund();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

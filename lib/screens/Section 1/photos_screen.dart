@@ -4,7 +4,6 @@ import 'dart:html' as html;
 import 'package:image_picker_web/image_picker_web.dart';
 import 'package:path/path.dart' as Path;
 
-
 import 'package:flutter/material.dart';
 
 import 'package:image_cropper/image_cropper.dart';
@@ -53,7 +52,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
     }
     DataBase().setShowPage(8);
     DataBase().setAllImages(imageUrls);
-    Navigator.pushNamed(context, '/height/');
+    Navigator.pushNamed(context, '/birth_date/');
   }
 
   int count = 0;
@@ -105,6 +104,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
     html.File? imageFile = await ImagePickerWeb.getImageAsFile();
 
+    print("After deleted photo this function calls");
+
     setState(() {
       isLoadingImage[index] = true;
     });
@@ -120,12 +121,32 @@ class _PhotoScreenState extends State<PhotoScreen> {
         .ref('images/${uid}/${uid! + index.toString()}')
         .putBlob(imageFile);
     String downloadUrl = await snapshot.ref.getDownloadURL();
-    print(downloadUrl);
+    // print(downloadUrl);
     setState(() {
       isLoadingImage[index] = false;
       isUploadedImage[index] = true;
       imageUrls[index] = downloadUrl;
+     
     });
+  }
+
+  fetchImages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("images")) {
+      List<String> imgs = prefs.getStringList("images")!;
+      for (int i = 0; i < imgs.length; i++) {
+        isUploadedImage[i] = true;
+        imageUrls[i] = imgs[i];
+      }
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchImages();
+    super.initState();
   }
 
   @override
@@ -248,19 +269,38 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           onTap: () {
                             pickImage(context, index);
                           },
-                          child: Container(
-                            margin: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              image: isUploadedImage[index]
-                                  ? DecorationImage(
-                                      image: NetworkImage(imageUrls[index]),
-                                      fit: BoxFit.cover,
-                                    )
-                                  : DecorationImage(
-                                      image: AssetImage(image[index]),
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
+                          child: Stack(
+                            children: [
+                             
+                              Container(
+                                margin: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  image: isUploadedImage[index]
+                                      ? DecorationImage(
+                                          image: NetworkImage(imageUrls[index]),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : DecorationImage(
+                                          image: AssetImage(image[index]),
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ),
+                               isUploadedImage[index]
+                                  ? Positioned(
+                                      top: -10,
+                                      right: -10,
+                                      child: IconButton(
+                                      icon: Icon(Icons.cancel, color: Colors.grey,),
+                                      onPressed: () {
+                                        setState(() {
+                                          isUploadedImage[index] = false;
+                                          imageUrls[index] ="";
+                                        });
+                                      },
+                                    ))
+                                  : Container(),
+                            ],
                           ),
                         );
                 },

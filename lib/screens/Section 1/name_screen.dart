@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gmlandingpage/services/database.dart';
 import 'package:gmlandingpage/widgets/button.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NameScreen extends StatefulWidget {
   const NameScreen({Key? key}) : super(key: key);
@@ -37,6 +38,22 @@ class _NameScreenState extends State<NameScreen> {
     DataBase().setShowPage(3);
     DataBase().setName(nameController.text);
     Navigator.pushNamed(context, '/gender/');
+  }
+
+   fetchName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("name")) {
+      nameController.text = prefs.getString("name")!;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchName();
+    super.initState();
   }
 
   @override

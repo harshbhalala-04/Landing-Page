@@ -3,9 +3,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:gmlandingpage/place_model.dart';
+import 'package:gmlandingpage/services/database.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/button.dart';
 
 class HomeTownScreen extends StatefulWidget {
@@ -16,12 +20,15 @@ class HomeTownScreen extends StatefulWidget {
 }
 
 TextEditingController homeTownController = new TextEditingController();
+String searchQuery = "";
+bool isSearchString = false;
+List<PlaceModel> homePlaceList = [];
+TextEditingController currentCityController = new TextEditingController();
+List<PlaceModel> currentCityList = [];
+bool isHomeTownSelected = false;
+bool isCurrentCitySelected = false;
 
 class _HomeTownScreenState extends State<HomeTownScreen> {
-  String searchQuery = "";
-  List<PlaceModel> homePlaceList = [];
-  TextEditingController currentCityController = new TextEditingController();
-  List<PlaceModel> currentCityList = [];
   navigationFunction() {
     if (homeTownController.text == "") {
       return showDialog(
@@ -42,7 +49,24 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
             );
           });
     }
-    Navigator.pushNamed(context, '/current_city/');
+    DataBase().setLocation(homeTownController.text, currentCityController.text);
+    Navigator.pushNamed(context, '/artist/');
+  }
+
+  fetchHomeTown() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("hometown")) {
+      homeTownController.text = prefs.getString("hometown")!;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchHomeTown();
+    super.initState();
   }
 
   @override
@@ -131,85 +155,121 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                   ),
                 ),
               ),
-              Padding(
+              ListTile(
+                onTap: () {
+                  showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    )),
+                    context: context,
+                    isDismissible: true,
+                    isScrollControlled: true,
+                    constraints: BoxConstraints(
+                      maxWidth: deviceSize.width < 800
+                          ? deviceSize.width
+                          : deviceSize.width / 4,
+                      maxHeight: deviceSize.height - 100,
+                      minHeight: deviceSize.height - 100,
+                    ),
+                    builder: (ctx) {
+                      return MyBottomSheetWidget(index: 0);
+                    },
+                  ).then((value) {
+                    setState(() {
+                      print(homeTownController.text);
+                      print(isHomeTownSelected);
+                    });
+                  });
+                },
+                leading: SvgPicture.asset("assets/images/location.svg"),
+                title: isHomeTownSelected
+                    ? Text(homeTownController.text)
+                    : Text(
+                        "Add a location",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
+                      ),
+                trailing: isHomeTownSelected
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isHomeTownSelected = false;
+                          });
+                        },
+                        icon: Icon(Icons.cancel),
+                      )
+                    : SizedBox(
+                        height: 0,
+                      ),
+              ),
+              SizedBox(height: 20,),
+                Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: TextField(
-                  controller: homeTownController,
-                  decoration: InputDecoration(
-                    hintText: '  Search',
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Icon(
-                        Icons.search,
-                        size: 30,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color.fromRGBO(182, 102, 210, 1),
-                      ),
-                    ),
-                   
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                      borderSide: BorderSide(
-                        width: 2,
-                        color: Color.fromRGBO(182, 102, 210, 1),
-                      ),
-                    ),
+                child: Text(
+                  "Current Location",
+                  style: TextStyle(
+                    fontFamily: "oxygen",
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                   ),
-                  onChanged: (val) {
-                    searchQuery = val;
-
-                    if (searchQuery != "") {
-                      findPlace(searchQuery);
-                    } else {
-                      setState(() {
-                        // isSearchString = false;
-                        homePlaceList = [];
-                      });
-                    }
-                  },
                 ),
               ),
-              homePlaceList.length > 0
-                  ? Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      child: ListView.separated(
-                        itemBuilder: (ctx, index) {
-                          return InkWell(
-                            onTap: () {
-                              if (homePlaceList[index].main_text != null &&
-                                  homePlaceList[index].secondary_text != null) {
-                                homeTownController.text =
-                                    homePlaceList[index].main_text! +
-                                        ", " +
-                                        homePlaceList[index].secondary_text!;
-                              } else {
-                                homeTownController.text =
-                                    homePlaceList[index].main_text!;
-                              }
-                              setState(() {
-                                homePlaceList = [];
-                              });
-                            },
-                            child: PredictionTile(
-                              placePredictions: homePlaceList[index],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (ctx, index) {
-                          return Divider();
-                        },
-                        itemCount: homePlaceList.length,
-                        shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
+               ListTile(
+                onTap: () {
+                  showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    )),
+                    context: context,
+                    isDismissible: true,
+                    isScrollControlled: true,
+                    constraints: BoxConstraints(
+                      maxWidth: deviceSize.width < 800
+                          ? deviceSize.width
+                          : deviceSize.width / 4,
+                      maxHeight: deviceSize.height - 100,
+                      minHeight: deviceSize.height - 100,
+                    ),
+                    builder: (ctx) {
+                      return MyBottomSheetWidget(index: 1);
+                    },
+                  ).then((value) {
+                    setState(() {
+                      
+                    });
+                  });
+                },
+                leading: SvgPicture.asset("assets/images/location.svg"),
+                title: isCurrentCitySelected
+                    ? Text(currentCityController.text)
+                    : Text(
+                        "Add a location",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
                       ),
-                    )
-                  : Container(),
+                trailing: isCurrentCitySelected
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isCurrentCitySelected = false;
+                          });
+                        },
+                        icon: Icon(Icons.cancel),
+                      )
+                    : SizedBox(
+                        height: 0,
+                      ),
+              ),
               deviceSize.width > 800 ? Spacer() : Container(),
               deviceSize.width > 800
                   ? Button(
@@ -225,31 +285,6 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
           ? Button(text: "Continue", navigationFunction: navigationFunction)
           : SizedBox(),
     );
-  }
-
-  void findPlace(String placeName) async {
-    String mapKey = "AIzaSyClZMABTQghPL4az0xu-2qyeoEe-GDU2ZQ";
-    if (placeName.length > 1) {
-      String autoCompleteUrl =
-          "https://agile-ocean-18311.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey";
-
-      var res = await RequestAssitant.getRequest(autoCompleteUrl);
-
-      if (res == "failed") {
-        return;
-      }
-      print("Places prediction:");
-      print(res);
-
-      if (res["status"] == "OK") {
-        var predictions = res["predictions"];
-        var placeList =
-            (predictions as List).map((e) => PlaceModel.fromJson(e)).toList();
-        setState(() {
-          homePlaceList = placeList;
-        });
-      }
-    }
   }
 }
 
@@ -325,5 +360,169 @@ class RequestAssitant {
     } catch (err) {
       print("$err");
     }
+  }
+}
+
+class MyBottomSheetWidget extends StatefulWidget {
+  final int index;
+
+  MyBottomSheetWidget({required this.index});
+
+  @override
+  State<MyBottomSheetWidget> createState() => _MyBottomSheetWidgetState();
+}
+
+class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
+  void findPlace(String placeName) async {
+    String mapKey = "AIzaSyClZMABTQghPL4az0xu-2qyeoEe-GDU2ZQ";
+
+    String autoCompleteUrl =
+        "https://agile-ocean-18311.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey";
+
+    var res = await RequestAssitant.getRequest(autoCompleteUrl);
+
+    if (res == "failed") {
+      return;
+    }
+    
+
+    if (res["status"] == "OK") {
+      var predictions = res["predictions"];
+      var placeList =
+          (predictions as List).map((e) => PlaceModel.fromJson(e)).toList();
+      setState(() {
+        if (widget.index == 0) {
+          homePlaceList = placeList;
+        } else {
+          currentCityList = placeList;
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+              // controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Search',
+                suffixIcon: Icon(
+                  Icons.search,
+                  size: 20,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  borderSide: BorderSide(width: 2),
+                ),
+              ),
+              onChanged: (val) {
+                searchQuery = val;
+                if (searchQuery != "") {
+                  setState(() {
+                    isSearchString = true;
+                    findPlace(searchQuery);
+                  });
+                } else {
+                  setState(() {
+                    isSearchString = false;
+                    if (widget.index == 0) {
+                      homePlaceList = [];
+                    } else {
+                      currentCityList = [];
+                    }
+                  });
+                }
+                
+
+              
+              },
+            ),
+          ),
+          widget.index == 0 && homePlaceList.length > 0
+              ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListView.separated(
+                    itemBuilder: (ctx, index) {
+                      return InkWell(
+                        onTap: () {
+                          if (homePlaceList[index].main_text != null &&
+                              homePlaceList[index].secondary_text != null) {
+                            homeTownController.text =
+                                homePlaceList[index].main_text! +
+                                    ", " +
+                                    homePlaceList[index].secondary_text!;
+                          } else {
+                            homeTownController.text =
+                                homePlaceList[index].main_text!;
+                          }
+                          print(homeTownController.text);
+                          homePlaceList = [];
+                          isHomeTownSelected = true;
+                          setState(() {
+                            
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: PredictionTile(
+                          placePredictions: homePlaceList[index],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (ctx, index) {
+                      return Divider();
+                    },
+                    itemCount: homePlaceList.length,
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                  ),
+                )
+              : Container(),
+          widget.index == 1 && currentCityList.length > 0
+              ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListView.separated(
+                    itemBuilder: (ctx, index) {
+                      return InkWell(
+                        onTap: () {
+                          if (currentCityList[index].main_text != null &&
+                              currentCityList[index].secondary_text != null) {
+                            currentCityController.text =
+                                currentCityList[index].main_text! +
+                                    ", " +
+                                    currentCityList[index].secondary_text!;
+                          } else {
+                            currentCityController.text =
+                                currentCityList[index].main_text!;
+                          }
+                          isCurrentCitySelected = true;
+                          currentCityList = [];
+                          setState(() {
+                            
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: PredictionTile(
+                          placePredictions: currentCityList[index],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (ctx, index) {
+                      return Divider();
+                    },
+                    itemCount: currentCityList.length,
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                  ),
+                )
+              : Container(),
+        ],
+      ),
+    );
   }
 }

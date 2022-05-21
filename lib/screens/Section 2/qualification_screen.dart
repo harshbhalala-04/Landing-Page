@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -48,7 +49,31 @@ class _QualificationScreenState extends State<QualificationScreen> {
     }
     DataBase().setShowPage(15);
     DataBase().setQualification(qualification);
-    Navigator.pushNamed(context, '/industry/');
+    Navigator.pushNamed(context, '/academic_background/');
+  }
+  fetchQualification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("qualification")) {
+      if(prefs.getString("qualification") == "Bachelors") {
+        _reply = Qualification.Bachelors;
+      } else if(prefs.getString("qualification") == "Masters") {
+        _reply = Qualification.Masters;
+      } else if(prefs.getString("qualification") == "PHD") {
+        _reply = Qualification.PHD;
+      } else if(prefs.getString("qualification") == "Post Doc") {
+        _reply = Qualification.PostDoc;
+      } else if(prefs.getString("qualification") == "Other") {
+        _reply = Qualification.Other;
+      } 
+    }
+
+    setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchQualification();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

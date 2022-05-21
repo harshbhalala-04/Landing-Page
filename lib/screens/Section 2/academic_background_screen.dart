@@ -4,6 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -52,7 +53,23 @@ class _AcademicBackgroundScreenState extends State<AcademicBackgroundScreen> {
     }
     DataBase().setShowPage(14);
     DataBase().setAcademicBackground(academicBGAns);
-    Navigator.pushNamed(context, '/highest_qualification/');
+    Navigator.pushNamed(context, '/income_range/');
+  }
+
+  fetchAcademicBackground() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("academicBackground")) {
+      academicBGAns = prefs.getString("academicBackground")!;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchAcademicBackground();
+    super.initState();
   }
 
   @override
@@ -147,6 +164,7 @@ class _AcademicBackgroundScreenState extends State<AcademicBackgroundScreen> {
                   width: double.infinity,
                   child: DropdownSearch<String>(
                     mode: Mode.MENU,
+                    selectedItem: academicBGAns,
                     showSelectedItems: true,
                     showSearchBox: true,
                     items: academicBGList,

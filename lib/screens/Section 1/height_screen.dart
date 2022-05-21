@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -15,107 +17,56 @@ class HeightScreen extends StatefulWidget {
 }
 
 class _HeightScreenState extends State<HeightScreen> {
-  
-
   TextEditingController feetController = new TextEditingController();
   TextEditingController inchesController = new TextEditingController();
 
+  String feetAns = "";
+  String inchesAns = "";
+
   navigationFunction() {
-    
-    if(feetController.text == "" || inchesController.text == "") {
+    if (feetAns == "" || inchesAns == "") {
       return showDialog(
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              content: Text("Please Select Your Height"),
+              content: Text("This field is required"),
               actions: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Color.fromRGBO(182, 102, 210, 1)),
+                  style: ElevatedButton.styleFrom(
+                      primary: Color.fromRGBO(182, 102, 210, 1)),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Close"),
+                  child: Text("Okay"),
                 ),
               ],
             );
           });
     }
-    if(int.tryParse(inchesController.text) == null) {
-      return showDialog(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              content: Text("Please Enter valid Parameters"),
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Color.fromRGBO(182, 102, 210, 1)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close"),
-                ),
-              ],
-            );
-          });
-    }
-    if(int.tryParse(feetController.text) == null) {
-      return showDialog(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              content: Text("Please Enter valid Parameters"),
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Color.fromRGBO(182, 102, 210, 1)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close"),
-                ),
-              ],
-            );
-          });
-    }
-    if(int.tryParse(feetController.text)! >= 10) {
-       return showDialog(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              content: Text("Please Enter valid height"),
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Color.fromRGBO(182, 102, 210, 1)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close"),
-                ),
-              ],
-            );
-          });
-    }
-     if(int.tryParse(inchesController.text)! >= 12) {
-      return showDialog(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              content: Text("Please Enter valid height"),
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Color.fromRGBO(182, 102, 210, 1)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close"),
-                ),
-              ],
-            );
-          });
-    }
+
     DataBase().setShowPage(9);
-    DataBase().setHeight(feetController.text + "'" + inchesController.text + "\"");
-    Navigator.pushNamed(context, '/mother_toungue/');
+    DataBase().setHeight(feetAns + inchesAns, feetAns, inchesAns);
+    Navigator.pushNamed(context, '/location/');
   }
+
+  fetchHeight() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("feet")) {
+      feetController.text = prefs.getString("feet")!;
+    }
+    if (prefs.containsKey("inches")) {
+      inchesController.text = prefs.getString("inches")!;
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchHeight();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -127,15 +78,15 @@ class _HeightScreenState extends State<HeightScreen> {
           ? AppBar(
               backgroundColor: Colors.white,
               elevation: 0,
-              leading:  Container(
-                 margin: EdgeInsets.only(top: 15),
+              leading: Container(
+                margin: EdgeInsets.only(top: 15),
                 child: IconButton(
-                              icon: Icon(Icons.arrow_back_ios_new),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              color: Colors.grey,
-                            ),
+                  icon: Icon(Icons.arrow_back_ios_new),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  color: Colors.grey,
+                ),
               ),
               actions: [
                 Padding(
@@ -143,7 +94,7 @@ class _HeightScreenState extends State<HeightScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 8/11,
+                    percent: 8 / 11,
                     center: Text("8/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
@@ -164,7 +115,7 @@ class _HeightScreenState extends State<HeightScreen> {
               deviceSize.width < 800 ? deviceSize.width : deviceSize.width / 4,
           child: Column(
             children: [
-               deviceSize.width < 800
+              deviceSize.width < 800
                   ? Container()
                   : Padding(
                       padding:
@@ -182,7 +133,7 @@ class _HeightScreenState extends State<HeightScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 8/11,
+                            percent: 8 / 11,
                             center: Text("8/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
@@ -204,102 +155,76 @@ class _HeightScreenState extends State<HeightScreen> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: Stack(
-                      overflow: Overflow.visible,
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              width: 50,
-                              child: TextField(
-                                controller: feetController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: "#",
-                                  border: OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    borderSide: BorderSide(width: 2),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "Feet",
-                              style: TextStyle(
-                                  fontFamily: "oxygen",
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 8),
-                            ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // SizedBox(
+                    //   width: 20,
+                    // ),
+                    Flexible(
+                      child: Container(
+                        width: 90,
+                        child: DropdownSearch<String>(
+                          mode: Mode.MENU,
+                          showSelectedItems: true,
+
+                          // selectedItem: feetAns ,
+                          showSearchBox: false,
+
+                          items: [
+                            "1'",
+                            "2'",
+                            "3'",
+                            "4'",
+                            "5'",
+                            "6'",
+                            "7'",
+                            "8'",
+                            "9'"
                           ],
+                          label: "Feet",
+                          onChanged: (val) {
+                            feetAns = val!;
+                          },
                         ),
-                        Positioned(
-                          top: -10,
-                          right: -10,
-                          child: Text(
-                            "‘",
-                            style: TextStyle(
-                                color: Color.fromRGBO(51, 51, 51, 1),
-                                fontSize: 20),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Flexible(
-                    child: Stack(
-                      overflow: Overflow.visible,
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              width: 50,
-                              child: TextField(
-                                controller: inchesController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: "#",
-                                  border: OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    borderSide: BorderSide(width: 2),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "Inches",
-                              style: TextStyle(
-                                  fontFamily: "oxygen",
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 8),
-                            ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Flexible(
+                      child: Container(
+                        width: 100,
+                        child: DropdownSearch<String>(
+                          mode: Mode.MENU,
+                          showSelectedItems: true,
+                          // selectedItem: inchesAns ,
+                          showSearchBox: false,
+
+                          items: [
+                            "1\"",
+                            "2\"",
+                            "3\"",
+                            "4\"",
+                            "5\"",
+                            "6\"",
+                            "7\"",
+                            "8\"",
+                            "9\"",
+                            "10\"",
+                            "11\""
                           ],
+                          label: "Inches",
+                          onChanged: (val) {
+                            inchesAns = val!;
+                          },
                         ),
-                        Positioned(
-                          top: -10,
-                          right: -10,
-                          child: Text(
-                            "“",
-                            style: TextStyle(
-                                color: Color.fromRGBO(51, 51, 51, 1),
-                                fontSize: 20),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                    )
+                  ],
+                ),
               ),
               deviceSize.width > 800 ? Spacer() : Container(),
               deviceSize.width > 800

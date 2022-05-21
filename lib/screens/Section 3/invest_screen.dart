@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -67,6 +68,38 @@ class _InvestScreenState extends State<InvestScreen> {
   int count = 0;
 
   List<int> selectedValues = [];
+  fetchInvestment() async { 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.containsKey("investment")) {
+      List<String> replyAns = prefs.getStringList("investment")!;
+      count = replyAns.length;
+      for(int i = 0; i < replyAns.length; i++) {
+        if(replyAns[i] == "Bank FD’s / RD’s") {
+          option1 = true;
+        } else if(replyAns[i] == "Gold") {
+          option2 = true;
+        } else if(replyAns[i] == "Real estate") {
+          option3 = true;
+        } else if(replyAns[i] == "Equities") {
+          option4 = true;
+        } else if(replyAns[i] == "Cryptocurrencies & NFT’s") {
+          option5 = true;
+        }
+      }
+
+    }
+    setState(() {
+      
+    });
+    
+    
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchInvestment();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

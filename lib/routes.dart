@@ -5,11 +5,8 @@ import 'dart:js';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:gmlandingpage/screens/Section%201/birth_date_screen.dart';
-import 'package:gmlandingpage/screens/Section%201/current_city_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/gender_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/home_town_screen.dart';
-import 'package:gmlandingpage/screens/Section%201/interested_screen.dart';
-
 import 'package:gmlandingpage/screens/Section%201/name_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/relationship_status_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/sec1IntroScreen.dart';
@@ -28,7 +25,7 @@ import 'package:gmlandingpage/screens/slider_question.dart';
 import 'package:gmlandingpage/screens/splash_route.dart';
 import 'package:gmlandingpage/screens/thank_you_page.dart';
 
-import 'screens/Section 1/book_screen.dart';
+import 'screens/Section 1/artist_screen.dart';
 import 'screens/Section 1/height_screen.dart';
 import 'screens/Section 1/mother_toungue_screen.dart';
 import 'screens/Section 1/movie_screen.dart';
@@ -113,9 +110,7 @@ class Flurorouter {
   static Handler _homeTownHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           HomeTownScreen());
-  static Handler _currentCityHandler = Handler(
-      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
-          CurrentCityScreen());
+  
   static Handler _sec2Que2Handler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           QualificationScreen());
@@ -152,9 +147,9 @@ class Flurorouter {
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           MotherToungueScreen());
 
-  static Handler _bookHandler = Handler(
+  static Handler _artistHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
-          BookScreen());
+          ArtistScreen());
 
   static Handler _movieHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
@@ -237,12 +232,10 @@ class Flurorouter {
         handler: _nameHandler, transitionType: TransitionType.fadeIn);
     router.define('/gender/',
         handler: _genderHandler, transitionType: TransitionType.fadeIn);
-    // router.define('/interested/',
-    //     handler: _interestedHandler, transitionType: TransitionType.fadeIn);
-    router.define('/home_town/',
+  
+    router.define('/location/',
         handler: _homeTownHandler, transitionType: TransitionType.fadeIn);
-    router.define('/current_city/',
-        handler: _currentCityHandler, transitionType: TransitionType.fadeIn);
+   
     router.define('/relationship_status/',
         handler: _relationshipHandler, transitionType: TransitionType.fadeIn);
 
@@ -263,8 +256,8 @@ class Flurorouter {
         handler: _motherToungueHandler, transitionType: TransitionType.fadeIn);
 
     // Books
-    router.define('/books/',
-        handler: _bookHandler, transitionType: TransitionType.fadeIn);
+    router.define('/artist/',
+        handler: _artistHandler, transitionType: TransitionType.fadeIn);
 
     // Movies
     router.define('/movies/',

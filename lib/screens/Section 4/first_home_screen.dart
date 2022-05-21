@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -49,7 +50,28 @@ class _FirstHomeScreenState extends State<FirstHomeScreen> {
     
     DataBase().setShowPage(28);
     DataBase().setFirstHome(option);
-    Navigator.pushNamed(context, '/wedding/');
+    Navigator.pushNamed(context, '/plan_for_children/');
+  }
+
+  fetchFirstHome() async {
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("firstHome")) {
+      if(prefs.getString("firstHome") == "I wish to do this") {
+        _reply = Options.Option1;
+      } else if(prefs.getString("firstHome") == "I have already done this") {
+        _reply = Options.Option2;
+      }  else if(prefs.getString("firstHome") == "Renting makes financial sense to me") {
+        _reply = Options.Option3;
+      } else if(prefs.getString("firstHome") == "I haven’t thought about it") {
+        _reply = Options.Option4;
+      } 
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchFirstHome();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

@@ -5,9 +5,14 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:gmlandingpage/global_controller.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../global.dart';
 import '../route_list.dart';
+import '../model/usermodel.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -20,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   bool allAnswerGiven = false;
   int showPageIndex = 0;
+  final GlobalController globalController = Get.put(GlobalController());
 
   checkUserRoute() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
           .then((val) {
         allAnswerGiven = val.data()!['allAnswer'];
         showPageIndex = val.data()!['showPage'];
-        
+        globalController.fetchUser(val.data()!);
+
         if (allAnswerGiven) {
           return Timer(Duration(seconds: 2),
               () => Navigator.pushNamed(context, '/feed/'));
@@ -47,8 +54,8 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       });
     } else {
-      return Timer(
-          Duration(seconds: 2), () => Navigator.pushNamed(context, '/onboarding/'));
+      return Timer(Duration(seconds: 2),
+          () => Navigator.pushNamed(context, '/onboarding/'));
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gmlandingpage/services/database.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/button.dart';
 
@@ -52,6 +53,29 @@ class _IncomeScreenState extends State<IncomeScreen> {
     DataBase().setShowPage(17);
     DataBase().setIncome(income);
     Navigator.pushNamed(context, '/source_of_income/');
+  }
+  fetchIncome() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("income")) {
+      if(prefs.getString("income") == "₹0 - ₹6 Lakhs") {
+        _reply = IncomeRange.ZeroToSix;
+      } else if(prefs.getString("income") == "₹6 Lakhs - ₹12 Lakhs") {
+        _reply = IncomeRange.SixToTwelve;
+      } else if(prefs.getString("income") == "₹12 Lakhs - ₹24 Lakhs") {
+        _reply = IncomeRange.TwelveToTwentyFour;
+      } else if(prefs.getString("income") == "Above ₹24 Lakhs") {
+        _reply = IncomeRange.AboverTwentyFour;
+      } 
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchIncome();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

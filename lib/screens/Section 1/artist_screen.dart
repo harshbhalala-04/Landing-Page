@@ -3,37 +3,50 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:spotify/spotify.dart' as spotify;
 
 import '../../book_model.dart';
+import '../../model/artist_model.dart';
 import '../../services/database.dart';
 import '../../widgets/button.dart';
 
-class BookScreen extends StatefulWidget {
-  const BookScreen({Key? key}) : super(key: key);
+class ArtistScreen extends StatefulWidget {
+  const ArtistScreen({Key? key}) : super(key: key);
 
   @override
-  State<BookScreen> createState() => _BookScreenState();
+  State<ArtistScreen> createState() => _ArtistScreenState();
 }
 
 TextEditingController searchController = new TextEditingController();
 bool isSearchString = false;
 String searchQuery = "";
-List<BookModel> bookList = [];
-List<BookModel> selectedBooks = [BookModel(), BookModel(), BookModel()];
-List<bool> isBookSelected = [false, false, false];
+// List<ArtistModel> artistList = [];
+List<ArtistModel> artistList = [];
+List<ArtistModel> selectedArtist = [
+  ArtistModel(),
+  ArtistModel(),
+  ArtistModel()
+];
+List<bool> isArtistSelected = [false, false, false];
 
-class _BookScreenState extends State<BookScreen> {
+const clientId = "f7c5d4aad9d945eca2d825f85aee6c69";
+const clientSecret = "9524240c15564693938e84d40a4aba4c";
+
+final credentials = spotify.SpotifyApiCredentials(clientId, clientSecret);
+final spotifyAuth = spotify.SpotifyApi(credentials);
+
+class _ArtistScreenState extends State<ArtistScreen> {
   navigationFunction() {
-    if (selectedBooks.length < 1) {
+    if (selectedArtist.length < 1) {
       return showDialog(
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              content: Text("Please Select Atleast one book"),
+              content: Text("Please Select Atleast one artist"),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -64,7 +77,7 @@ class _BookScreenState extends State<BookScreen> {
               backgroundColor: Colors.white,
               elevation: 0,
               leading: Container(
-                 margin: EdgeInsets.only(top: 15),
+                margin: EdgeInsets.only(top: 15),
                 child: IconButton(
                   icon: Icon(Icons.arrow_back_ios_new),
                   onPressed: () {
@@ -128,7 +141,7 @@ class _BookScreenState extends State<BookScreen> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  "Name three must read books according to you?",
+                  "Who are your three favourite artists?",
                   style: TextStyle(
                     fontFamily: "oxygen",
                     fontSize: 24,
@@ -136,39 +149,6 @@ class _BookScreenState extends State<BookScreen> {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.all(20.0),
-              //   child: TextField(
-              //     controller: searchController,
-              //     decoration: InputDecoration(
-              //       hintText: 'Search',
-              //       suffixIcon: Icon(
-              //         Icons.search,
-              //         size: 20,
-              //       ),
-              //       border: OutlineInputBorder(
-              //         borderRadius: const BorderRadius.all(Radius.circular(30)),
-              //         borderSide: BorderSide(width: 2),
-              //       ),
-              //     ),
-              //     onChanged: (val) {
-              //       searchQuery = val;
-
-              //       if (searchQuery != "") {
-              //         setState(() {
-              //           isSearchString = true;
-              //           bookList = [];
-              //           getBooks(searchQuery);
-              //         });
-              //       } else {
-              //         setState(() {
-              //           isSearchString = false;
-              //           bookList = [];
-              //         });
-              //       }
-              //     },
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
@@ -177,12 +157,14 @@ class _BookScreenState extends State<BookScreen> {
                       Icons.info_outline,
                       color: Color.fromRGBO(51, 51, 51, 1),
                     ),
-                    Text(
-                      "Minimum 1 book is required. You can add more later.",
-                      style: TextStyle(
-                        fontFamily: "oxygen",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                    Flexible(
+                      child: Text(
+                        "Minimum 1 artist is required. You can add more later.",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ],
@@ -195,11 +177,10 @@ class _BookScreenState extends State<BookScreen> {
                 onTap: () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      )
-                    ),
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    )),
                     context: context,
                     isDismissible: true,
                     isScrollControlled: true,
@@ -211,35 +192,34 @@ class _BookScreenState extends State<BookScreen> {
                       minHeight: deviceSize.height - 100,
                     ),
                     builder: (ctx) {
-                      print("Once again bottom");
                       return MyBottomSheetWidget(index: 0);
                     },
                   ).then((value) {
-                    setState(() {
-                      print("Here state changes");
-                      print(selectedBooks);
-                    });
+                    setState(() {});
                   });
                 },
-                leading: isBookSelected[0]
-                    ? Image.network(selectedBooks[0].thumbnail!)
+                leading: isArtistSelected[0]
+                    ? ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                        child: Image.network(selectedArtist[0].imageUri!),
+                      )
                     : SvgPicture.asset("assets/images/plus.svg"),
-                title: isBookSelected[0]
-                    ? Text(selectedBooks[0].title!)
+                title: isArtistSelected[0]
+                    ? Text(selectedArtist[0].name!)
                     : Text(
-                        "Add a book",
+                        "Add an artist",
                         style: TextStyle(
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
                           fontSize: 18,
                         ),
                       ),
-                trailing: isBookSelected[0]
+                trailing: isArtistSelected[0]
                     ? IconButton(
                         onPressed: () {
                           setState(() {
-                            isBookSelected[0] = false;
-                            selectedBooks.removeAt(0);
+                            isArtistSelected[0] = false;
+                            selectedArtist.removeAt(0);
                           });
                         },
                         icon: Icon(Icons.cancel),
@@ -250,7 +230,7 @@ class _BookScreenState extends State<BookScreen> {
                 height: 20,
               ),
               ListTile(
-                 onTap: () {
+                onTap: () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
@@ -268,35 +248,38 @@ class _BookScreenState extends State<BookScreen> {
                       minHeight: deviceSize.height - 100,
                     ),
                     builder: (ctx) {
-                      print("Once again bottom");
                       return MyBottomSheetWidget(index: 1);
                     },
                   ).then((value) {
-                    setState(() {
-                      print("Here state changes");
-                      print(selectedBooks);
-                    });
+                    setState(() {});
                   });
                 },
-                leading: isBookSelected[1]
-                    ? Image.network(selectedBooks[1].thumbnail!)
-                    : SvgPicture.asset("assets/images/plus.svg"),
-                title: isBookSelected[1]
-                    ? Text(selectedBooks[1].title!)
+                leading: isArtistSelected[1]
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                          selectedArtist[1].imageUri!,
+                        ),
+                      )
+                    : SvgPicture.asset(
+                        "assets/images/plus.svg",
+                      ),
+                title: isArtistSelected[1]
+                    ? Text(selectedArtist[1].name!)
                     : Text(
-                        "Add a book",
+                        "Add an artist",
                         style: TextStyle(
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
                           fontSize: 18,
                         ),
                       ),
-                      trailing: isBookSelected[1]
+                trailing: isArtistSelected[1]
                     ? IconButton(
                         onPressed: () {
                           setState(() {
-                            isBookSelected[1] = false;
-                            selectedBooks.removeAt(1);
+                            isArtistSelected[1] = false;
+                            selectedArtist.removeAt(1);
                           });
                         },
                         icon: Icon(Icons.cancel),
@@ -307,7 +290,7 @@ class _BookScreenState extends State<BookScreen> {
                 height: 20,
               ),
               ListTile(
-                 onTap: () {
+                onTap: () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
@@ -325,43 +308,37 @@ class _BookScreenState extends State<BookScreen> {
                       minHeight: deviceSize.height - 100,
                     ),
                     builder: (ctx) {
-                      print("Once again bottom");
                       return MyBottomSheetWidget(index: 2);
                     },
                   ).then((value) {
-                    setState(() {
-                      print("Here state changes");
-                      print(selectedBooks);
-                      print(isBookSelected[2]);
-                    });
+                    setState(() {});
                   });
                 },
-                leading: isBookSelected[2]
-                    ? Image.network(selectedBooks[2].thumbnail!)
+                leading: isArtistSelected[2]
+                    ? ClipRRect( borderRadius: BorderRadius.circular(5),child: Image.network(selectedArtist[2].imageUri!))
                     : SvgPicture.asset("assets/images/plus.svg"),
-                title: isBookSelected[2]
-                    ? Text(selectedBooks[2].title!)
+                title: isArtistSelected[2]
+                    ? Text(selectedArtist[2].name!)
                     : Text(
-                        "Add a book",
+                        "Add an artist",
                         style: TextStyle(
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
                           fontSize: 18,
                         ),
                       ),
-                      trailing: isBookSelected[2]
+                trailing: isArtistSelected[2]
                     ? IconButton(
                         onPressed: () {
                           setState(() {
-                            isBookSelected[2] = false;
-                            selectedBooks.removeAt(2);
+                            isArtistSelected[2] = false;
+                            selectedArtist.removeAt(2);
                           });
                         },
                         icon: Icon(Icons.cancel),
                       )
                     : SizedBox(),
               ),
-
               deviceSize.width > 800 ? Spacer() : Container(),
               deviceSize.width > 800
                   ? Button(
@@ -388,24 +365,22 @@ class MyBottomSheetWidget extends StatefulWidget {
 }
 
 class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
-  getBooks(String query) async {
-    try {
-      final response = await http.get(
-          Uri.parse("https://www.googleapis.com/books/v1/volumes?q=$query"));
+  getArtistData(String query) async {
+    spotify.BundledPages data =
+        spotifyAuth.search.get(query, types: [spotify.SearchType.artist]);
+    List<spotify.Page> searchData = await data.first();
 
-      final items = jsonDecode(response.body)['items'];
-
-      for (var item in items) {
-        bookList.add(BookModel.fromApi(item));
-      }
-
-      for (int i = 0; i < bookList.length; i++) {
-        bookList[i].authors;
-      }
-      setState(() {});
-    } catch (e) {
-      print("error get books $e");
+    for (int i = 0; i < searchData.length; i++) {
+      searchData[i].items?.forEach((element) {
+        artistList.add(new ArtistModel(
+            name: element.name,
+            id: element.id,
+            imageUri: element.images == null || element.images.length == 0
+                ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"
+                : element.images[0].url));
+      });
     }
+    setState(() {});
   }
 
   @override
@@ -435,14 +410,14 @@ class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
                 if (searchQuery != "") {
                   setState(() {
                     isSearchString = true;
-                    print("Here set state of is searching string true");
-                    bookList = [];
-                    getBooks(searchQuery);
+
+                    artistList = [];
+                    getArtistData(searchQuery);
                   });
                 } else {
                   setState(() {
                     isSearchString = false;
-                    bookList = [];
+                    artistList = [];
                   });
                 }
               },
@@ -453,7 +428,7 @@ class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   // scrollDirection: Axis.vertical,
-                  itemCount: bookList.length,
+                  itemCount: artistList.length,
                   itemBuilder: (ctx, index) {
                     return Padding(
                       padding: const EdgeInsets.all(20),
@@ -465,29 +440,30 @@ class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
                           child: InkWell(
                             onTap: () {
                               int flag = 0;
-                              for (int i = 0; i < selectedBooks.length; i++) {
-                                if (selectedBooks[i].id == bookList[index].id) {
+                              for (int i = 0; i < selectedArtist.length; i++) {
+                                if (selectedArtist[i].id ==
+                                    artistList[index].id) {
                                   flag = 1;
                                 }
                               }
                               if (flag == 0) {
-                                selectedBooks[widget.index] = bookList[index];
+                                selectedArtist[widget.index] =
+                                    artistList[index];
                               }
 
                               isSearchString = false;
                               searchQuery = "";
-                              bookList = [];
-                              isBookSelected[widget.index] = true;
-                              print("here index value: $index");
-                              print(isBookSelected[2]);
+                              artistList = [];
+                              isArtistSelected[widget.index] = true;
+
                               searchController.text = "";
                               setState(() {});
                               Navigator.pop(context);
                             },
                             child: ListTile(
                               leading:
-                                  Image.network(bookList[index].thumbnail!),
-                              title: Text(bookList[index].title!),
+                                  Image.network(artistList[index].imageUri!),
+                              title: Text(artistList[index].name!),
                             ),
                           ),
                         ),
@@ -500,5 +476,3 @@ class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
     );
   }
 }
-
-

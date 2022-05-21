@@ -17,7 +17,7 @@ class Sec4IntroScreen extends StatefulWidget {
 class _Sec4IntroScreenState extends State<Sec4IntroScreen> {
   navigationFunction() {
     DataBase().setShowPage(26);
-    Navigator.pushNamed(context, '/plan_for_children/');
+    Navigator.pushNamed(context, '/wedding/');
   }
 
   @override

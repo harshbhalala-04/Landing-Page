@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gmlandingpage/services/database.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/button.dart';
 
@@ -24,12 +25,17 @@ class _GenderScreenState extends State<GenderScreen> {
   navigationFunction() {
     String gender = "";
     String interested = "";
+    print(_replyInterested == Interested.Male);
+    print(_reply == Gender.Female);
     if (_replyInterested == Interested.Male) {
       interested = "Male";
+      print("This case here is true");
     }
-    if (_replyInterested == Interested.Female) {
+    else if (_replyInterested == Interested.Female) {
       interested = "Female";
+      
     } else {
+      print("Enter in required scope");
       return showDialog(
           context: context,
           builder: (ctx) {
@@ -51,6 +57,7 @@ class _GenderScreenState extends State<GenderScreen> {
     if (_reply == Gender.Male) {
       gender = "Male";
     } else if (_reply == Gender.Female) {
+      print("here gender is female");
       gender = "Female";
     } else if (_reply == Gender.Other) {
       gender = "Other";
@@ -75,7 +82,37 @@ class _GenderScreenState extends State<GenderScreen> {
     }
     DataBase().setShowPage(4);
     DataBase().setGenderAndInterested(gender, interested);
-    Navigator.pushNamed(context, '/home_town/');
+    Navigator.pushNamed(context, '/photos/');
+  }
+
+  fetchGender() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("gender")) {
+      if(prefs.getString("gender") == "Male") {
+        _reply = Gender.Male;
+      }else if(prefs.getString("gender") == "Male") {
+        _reply = Gender.Female;
+      } else {
+        _reply = Gender.Other;
+      }
+    }
+    if(prefs.containsKey("interestedGender")) {
+      print(prefs.getString("interestedGender"));
+       if(prefs.getString("interestedGender") == "Male") {
+        _replyInterested = Interested.Male;
+      }else if(prefs.getString("interestedGender") == "Female") {
+        _replyInterested = Interested.Female;
+      } 
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchGender();
+    super.initState();
   }
 
   @override
@@ -246,6 +283,7 @@ class _GenderScreenState extends State<GenderScreen> {
                         onChanged: (Gender? value) {
                           setState(() {
                             _reply = value!;
+                           
                           });
                         },
                       ),

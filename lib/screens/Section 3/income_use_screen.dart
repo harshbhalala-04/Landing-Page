@@ -39,6 +39,7 @@ class _IncomeUseScreenState extends State<IncomeUseScreen> {
       });
     }
     DataBase().setShowPage(20);
+    DataBase().setIncomeUse(title1, title2, title3, title4);
     Navigator.pushNamed(context, '/investment/');
   }
 
@@ -170,6 +171,7 @@ class _IncomeUseScreenState extends State<IncomeUseScreen> {
                                 child: Slider(
                                   activeColor: Color.fromRGBO(182, 102, 210, 1),
                                   value: title1,
+                                  
                                   min: min,
                                   max: max,
                                   onChanged: (newVal) {

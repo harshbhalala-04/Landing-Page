@@ -4,6 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -198,24 +199,41 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
   ];
   String motherToungeAns = "";
   navigationFunction() {
-    if(motherToungeAns == "") {
-       return AlertDialog(
-          content: Text("This field is required"),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Color.fromRGBO(182, 102, 210, 1)),
-              onPressed: (){
-                Navigator.pop(context);
-              }, 
-              child: Text("Okay"),
-            ),
-          ],
-        );
-      
+    if (motherToungeAns == "") {
+      return AlertDialog(
+        content: Text("This field is required"),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                primary: Color.fromRGBO(182, 102, 210, 1)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Okay"),
+          ),
+        ],
+      );
     }
     DataBase().setMotherToungue(motherToungeAns);
     DataBase().setShowPage(10);
-    Navigator.pushNamed(context, '/books/');
+    Navigator.pushNamed(context, '/height/');
+  }
+
+  fetchMotherToungue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("motherToungue")) {
+      print(prefs.getString("motherToungue"));
+      motherToungeAns = prefs.getString("motherToungue")!;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchMotherToungue();
+    super.initState();
   }
 
   @override
@@ -229,15 +247,15 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
           ? AppBar(
               backgroundColor: Colors.white,
               elevation: 0,
-              leading:  Container(
-                 margin: EdgeInsets.only(top: 15),
+              leading: Container(
+                margin: EdgeInsets.only(top: 15),
                 child: IconButton(
-                              icon: Icon(Icons.arrow_back_ios_new),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              color: Colors.grey,
-                            ),
+                  icon: Icon(Icons.arrow_back_ios_new),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  color: Colors.grey,
+                ),
               ),
               actions: [
                 Padding(
@@ -245,7 +263,7 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 9/11,
+                    percent: 9 / 11,
                     center: Text("9/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
@@ -266,7 +284,7 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
               deviceSize.width < 800 ? deviceSize.width : deviceSize.width / 4,
           child: Column(
             children: [
-               deviceSize.width < 800
+              deviceSize.width < 800
                   ? Container()
                   : Padding(
                       padding:
@@ -284,7 +302,7 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 9/11,
+                            percent: 9 / 11,
                             center: Text("9/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
@@ -311,24 +329,20 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
                 child: Container(
                   width: double.infinity,
                   child: DropdownSearch<String>(
-                    
                     mode: Mode.MENU,
                     showSelectedItems: true,
+                    selectedItem: motherToungeAns,
                     showSearchBox: true,
                     searchFieldProps: TextFieldProps(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Search",
-                      )
-                    ),
+                        decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Search",
+                    )),
                     items: motherToungueList,
-                    
                     label: "Select",
-                    
                     onChanged: (val) {
                       motherToungeAns = val!;
                     },
-                    
                   ),
                 ),
               ),
@@ -343,8 +357,7 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
           ),
         ),
       ),
-      
-bottomNavigationBar: deviceSize.width < 800
+      bottomNavigationBar: deviceSize.width < 800
           ? Button(text: "Continue", navigationFunction: navigationFunction)
           : SizedBox(),
     );

@@ -2,7 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:gmlandingpage/global.dart';
+import 'package:gmlandingpage/global_controller.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -20,6 +24,10 @@ class _BirthDateScreenState extends State<BirthDateScreen> {
   String yyyy = "";
   bool isValueSubmitted = false;
   String sunSign = "";
+
+  
+
+
   navigationFunction() {
     if (dd == "" || mm == "" || yyyy == "") {
       return showDialog(
@@ -42,7 +50,7 @@ class _BirthDateScreenState extends State<BirthDateScreen> {
     }
     DataBase().setShowPage(7);
     DataBase().setDOB(dd, mm, yyyy);
-    Navigator.pushNamed(context, '/photos/');
+    Navigator.pushNamed(context, '/mother_toungue/');
   }
 
   void showDatePickerDailog(BuildContext context) {
@@ -93,6 +101,29 @@ class _BirthDateScreenState extends State<BirthDateScreen> {
         });
       }
     });
+  }
+
+  fetchBirthDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.containsKey("date")) {
+      dd = prefs.getString("date")!;
+    }
+    if(prefs.containsKey("month")) {
+      mm = prefs.getString("month")!;
+    }
+    if(prefs.containsKey("date")) {
+      yyyy = prefs.getString("year")!;
+    }
+    setState(() {
+      
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState 
+    fetchBirthDate();
+    super.initState();
   }
 
   @override

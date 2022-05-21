@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, empty_catches, unused_local_variable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, empty_catches, unused_local_variable, unnecessary_new
 
 import 'dart:async';
 
@@ -8,9 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:gmlandingpage/global_controller.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../global.dart';
+import '../model/usermodel.dart';
 import '../route_list.dart';
 import '../services/database.dart';
 
@@ -29,7 +34,7 @@ class _AuthPageState extends State<AuthPage> {
   bool authFailure = false;
   String _phoneVal = "";
   String _otpVal = "";
-
+  bool isButtonActive = false;
   final googleSignIn = GoogleSignIn();
 
   User? _user;
@@ -41,13 +46,16 @@ class _AuthPageState extends State<AuthPage> {
   String? userEmail;
   bool isOtpVerify = false;
   bool resend = false;
+  TextEditingController phoneController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  bool phoneField = false;
+  bool emailField = false;
   googleLogin() async {
     try {
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithPopup(authProvider);
 
       _user = userCredential.user;
-
     } catch (e) {
       print(e);
     }
@@ -87,7 +95,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-   
+
     return Scaffold(
       appBar: deviceSize.width < 800
           ? AppBar(
@@ -187,65 +195,150 @@ class _AuthPageState extends State<AuthPage> {
                   : Container(),
               isOtpVerify
                   ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Pinput(
                         onChanged: (val) {
                           _otpVal = val;
                         },
-                        decoration: InputDecoration(
-                          hintText: "Enter OTP",
-                          filled: true,
-                          fillColor: Color.fromRGBO(248, 240, 251, 1),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(5)),
-                            borderSide: BorderSide(width: 2),
-                          ),
-                          hintStyle: TextStyle(
-                            fontFamily: "oxygen",
-                            fontWeight: FontWeight.normal,
-                            color: Color.fromRGBO(149, 149, 149, 1),
-                          ),
-                        ),
+                        length: 6,
+                        keyboardType: TextInputType.number,
                       ),
                     )
                   : Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          CountryCodePicker(
+                          TextField(
                             onChanged: (val) {
-                              countryCode = val.dialCode!;
-                             
+                              if(val.length != 10) {
+                                setState(() {
+                                  phoneField = false;
+                                  isButtonActive = false;
+                                });
+                              }
+                              if(val.length == 10) {
+                                setState(() {
+                                  phoneField = true;
+                                  if(phoneField && emailField) {
+                                    isButtonActive = true;
+                                  }
+                                });
+                              }
+                              _phoneVal = val;
                             },
-                            showDropDownButton: true,
-                            initialSelection: 'IN',
-                            favorite: ['+91', 'IN'],
-                            showFlagDialog: false,
-                            comparator: (a, b) => b.name!.compareTo(a.name!),
-                            onInit: (code) => print(
-                                "on init ${code!.name} ${code.dialCode} ${code.name}"),
+                             keyboardType: TextInputType.phone,
+                            controller: phoneController,
+                            decoration: InputDecoration(
+                              hintText: "Ten digit number",
+                              filled: true,
+                              fillColor: Color.fromRGBO(248, 240, 251, 1),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                borderSide: BorderSide(width: 2),
+                              ),
+                              hintStyle: TextStyle(
+                                fontFamily: "oxygen",
+                                fontWeight: FontWeight.normal,
+                                color: Color.fromRGBO(149, 149, 149, 1),
+                              ),
+                            ),
                           ),
-                          Flexible(
-                            child: TextField(
-                              onChanged: (val) {
-                                _phoneVal = val;
-                              },
-                              decoration: InputDecoration(
-                                hintText: "Ten digit number",
-                                filled: true,
-                                fillColor: Color.fromRGBO(248, 240, 251, 1),
-                                border: OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(5)),
-                                  borderSide: BorderSide(width: 2),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  indent: 5.0,
+                                  endIndent: 5.0,
+                                  thickness: 0.09,
+                                  color: Colors.grey,
                                 ),
-                                hintStyle: TextStyle(
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 35,
+                          ),
+                          Row(
+                            children: [
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Email ",
+                                      style: TextStyle(
+                                        fontFamily: "oxygen",
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.fromRGBO(51, 51, 51, 1),
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: "*",
+                                      style: TextStyle(
+                                        fontFamily: "oxygen",
+                                        fontSize: 16,
+                                        color: Color.fromRGBO(182, 102, 210, 1),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Flexible(
+                                  child: Text(
+                                "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.",
+                                style: TextStyle(
                                   fontFamily: "oxygen",
-                                  fontWeight: FontWeight.normal,
-                                  color: Color.fromRGBO(149, 149, 149, 1),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
                                 ),
+                              ))
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: emailController,
+                            onChanged: (val) {
+                              if(val == "") {
+                                setState(() {
+                                  emailField = false;
+                                  isButtonActive = false;
+                                });
+                              }
+                              if(val != "") {
+                                // print(emailController.text);
+                                bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(val);
+                                if(emailValid) {
+                                  setState(() {
+                                    emailField = true;
+                                    if(phoneField && emailField) {
+                                      isButtonActive = true;
+                                    }
+                                  });
+                                }
+                              }
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              
+                              hintText: "Your email",
+                              hintStyle: TextStyle(
+                                fontFamily: "oxygen",
+                                fontSize: 18,
+                                color: Color.fromRGBO(182, 182, 182, 1),
                               ),
                             ),
                           ),
@@ -314,6 +407,7 @@ class _AuthPageState extends State<AuthPage> {
                                 isOtpVerify = false;
                                 start = 30;
                                 wait = false;
+                                isLoading = false;
                               });
                             },
                             child: Text("Change number",
@@ -339,7 +433,9 @@ class _AuthPageState extends State<AuthPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Color.fromRGBO(182, 102, 210, 1),
+                            primary: isButtonActive
+                                ? Color.fromRGBO(182, 102, 210, 1)
+                                : Color.fromRGBO(182, 102, 210, 0.35),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(25),
@@ -347,13 +443,14 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                           onPressed: () async {
-                            
+                            if(!isButtonActive) {
+                              return;
+                            }
                             setState(() {
                               isLoading = true;
                             });
-                            
+
                             if (isOtpVerify) {
-                              
                               await authenticateMe(temp, _otpVal);
                               setState(() {
                                 isLoading = false;
@@ -388,75 +485,82 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Divider(
-                      indent: 30.0,
-                      endIndent: 10.0,
-                      thickness: 0.3,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "OR",
-                    style: TextStyle(
-                      fontFamily: "oxygen",
-                      fontSize: 12,
-                      color: Color.fromRGBO(51, 51, 51, 1),
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      indent: 10.0,
-                      endIndent: 30.0,
-                      thickness: 0.3,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+              SizedBox(
+                height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(25),
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      googleLogin();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset("assets/images/google.svg"),
-                          SizedBox(
-                            width: 5,
+              isOtpVerify
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            indent: 30.0,
+                            endIndent: 10.0,
+                            thickness: 0.3,
+                            color: Colors.black,
                           ),
-                          Text(
-                            "Continue using Google",
-                            style: TextStyle(
-                              fontFamily: "oxygen",
-                              fontSize: 18,
-                              color: Color.fromRGBO(51, 51, 51, 1),
+                        ),
+                        Text(
+                          "Did not receive an OTP?",
+                          style: TextStyle(
+                            fontFamily: "oxygen",
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                            color: Color.fromRGBO(51, 51, 51, 1),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            indent: 10.0,
+                            endIndent: 30.0,
+                            thickness: 0.3,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
+              isOtpVerify
+                  ? Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
                             ),
                           ),
-                        ],
+                          onPressed: () {
+                            googleLogin();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset("assets/images/google.svg"),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "Continue using Google",
+                                  style: TextStyle(
+                                    fontFamily: "oxygen",
+                                    fontSize: 18,
+                                    color: Color.fromRGBO(51, 51, 51, 1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              )
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -466,11 +570,11 @@ class _AuthPageState extends State<AuthPage> {
 
   sendOTP(String phoneNumber) async {
     FirebaseAuth auth = FirebaseAuth.instance;
-  
+
     ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber(
-      '$countryCode $phoneNumber',
+      '+91 $phoneNumber',
     );
-  
+
     return confirmationResult;
   }
 
@@ -502,9 +606,12 @@ class _AuthPageState extends State<AuthPage> {
           .collection("users")
           .doc(userCredential.user!.uid)
           .get()
-          .then((val) {
+          .then((val) async {
         int showPageIndex = val.data()!['showPage'];
         bool allAnswer = val.data()!['allAnswer'];
+        final GlobalController globalController = Get.put(GlobalController());
+        Get.find<GlobalController>().fetchUser(val.data()!);
+
         if (allAnswer) {
           return Timer(Duration(milliseconds: 1),
               () => Navigator.pushNamed(context, '/feed/'));

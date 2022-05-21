@@ -29,25 +29,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
-
   @override
   void initState() {
-    
     Flurorouter.setUpRouter();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       initialRoute: '/splash/',
       theme: ThemeData(
         primaryColor: Color.fromRGBO(182, 102, 210, 1),
         primarySwatch: Colors.purple,
-        
         accentColor: Color.fromRGBO(182, 102, 210,1),
-      
       ),
       supportedLocales: [
         Locale("af"),

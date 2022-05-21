@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
 import '../../widgets/button.dart';
@@ -44,6 +45,26 @@ class _IncomeSourceScreenState extends State<IncomeSourceScreen> {
   
     DataBase().setIncomeSource(incomeSrc);
     Navigator.pushNamed(context, '/financial_intro/');
+  }
+
+   fetchIncomeSource() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey("incomeSource")) {
+      if(prefs.getString("incomeSource") == "Yes") {
+        _reply = IncomeSource.Yes;
+      } else if(prefs.getString("incomeSource") == "No") {
+        _reply = IncomeSource.No;
+      } 
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchIncomeSource();
+    super.initState();
   }
 
   @override
