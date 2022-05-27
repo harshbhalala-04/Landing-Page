@@ -1,24 +1,36 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gmlandingpage/widgets/button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/database.dart';
-import '../../widgets/button.dart';
 
-class InvestScreen extends StatefulWidget {
-  const InvestScreen({Key? key}) : super(key: key);
+class QualityScreen extends StatefulWidget {
+  const QualityScreen({Key? key}) : super(key: key);
 
   @override
-  State<InvestScreen> createState() => _InvestScreenState();
+  State<QualityScreen> createState() => _QualityScreenState();
 }
 
-class _InvestScreenState extends State<InvestScreen> {
-  navigationFunction() {
+class _QualityScreenState extends State<QualityScreen> {
+  bool option1 = false;
+  bool option2 = false;
+  bool option3 = false;
+  bool option4 = false;
+  bool option5 = false;
+  bool option6 = false;
+  bool option7 = false;
+  bool option8 = false;
+  bool option9 = false;
+  bool option10 = false;
+
+  int count = 0;
+
+  List<int> selectedValues = [];
+
+    navigationFunction() {
     if (count != 2) {
       return showDialog(
           context: context,
@@ -40,65 +52,38 @@ class _InvestScreenState extends State<InvestScreen> {
     }
     List<String> reply = [];
     if (option1) {
-      reply.add("Bank FD’s / RD’s");
+      reply.add("Confidence");
     }
     if (option2) {
-      reply.add("Gold");
+      reply.add("Trustworthiness");
     }
     if (option3) {
-      reply.add("Real estate");
+      reply.add("Integrity");
     }
     if (option4) {
-      reply.add("Equities");
+      reply.add("Compassion");
     }
     if (option5) {
-      reply.add("Cryptocurrencies & NFT’s");
+      reply.add("Emotional Availability");
     }
-    DataBase().setInvestment(reply);
-    DataBase().setShowPage(21);
-    Navigator.pushNamed(context, '/invest_in_stock/');
-  }
-
-  bool option1 = false;
-  bool option2 = false;
-  bool option3 = false;
-  bool option4 = false;
-  bool option5 = false;
-
-  int count = 0;
-
-  List<int> selectedValues = [];
-  fetchInvestment() async { 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(prefs.containsKey("investment")) {
-      List<String> replyAns = prefs.getStringList("investment")!;
-      count = replyAns.length;
-      for(int i = 0; i < replyAns.length; i++) {
-        if(replyAns[i] == "Bank FD’s / RD’s") {
-          option1 = true;
-        } else if(replyAns[i] == "Gold") {
-          option2 = true;
-        } else if(replyAns[i] == "Real estate") {
-          option3 = true;
-        } else if(replyAns[i] == "Equities") {
-          option4 = true;
-        } else if(replyAns[i] == "Cryptocurrencies & NFT’s") {
-          option5 = true;
-        }
-      }
-
+     if (option6) {
+      reply.add("Respect");
     }
-    setState(() {
-      
-    });
-    
-    
-  }
-  @override
-  void initState() {
-    // TODO: implement initState
-    fetchInvestment();
-    super.initState();
+     if (option7) {
+      reply.add("Sense of Humor");
+    }
+     if (option8) {
+      reply.add("Maturity");
+    }
+     if (option9) {
+      reply.add("Ambitious");
+    }
+     if (option10) {
+      reply.add("Family Oriented");
+    }
+    DataBase().setQuality(reply);
+    // DataBase().setShowPage(21);
+    Navigator.pushNamed(context, '/professional_intro/');
   }
 
   @override
@@ -126,8 +111,8 @@ class _InvestScreenState extends State<InvestScreen> {
                     child: CircularPercentIndicator(
                       radius: 20.0,
                       lineWidth: 2.0,
-                      percent: 2 / 4,
-                      center: Text("2/4"),
+                      percent: 11 / 11,
+                      center: Text("11/11"),
                       progressColor: Color.fromRGBO(182, 102, 210, 1),
                     )),
               ],
@@ -166,8 +151,8 @@ class _InvestScreenState extends State<InvestScreen> {
                             CircularPercentIndicator(
                               radius: 20.0,
                               lineWidth: 2.0,
-                              percent: 2 / 4,
-                              center: Text("2/4"),
+                              percent: 11 / 11,
+                              center: Text("11/11"),
                               progressColor: Color.fromRGBO(182, 102, 210, 1),
                             ),
                           ],
@@ -179,7 +164,7 @@ class _InvestScreenState extends State<InvestScreen> {
                     children: [
                       Flexible(
                         child: Text(
-                          "If you had to invest a million dollars in only two asset classes, then what would they be?",
+                          "What are the two most important qualities you want in your significant other?",
                           style: TextStyle(
                             fontFamily: "oxygen",
                             fontSize: 24,
@@ -241,8 +226,7 @@ class _InvestScreenState extends State<InvestScreen> {
                         count++;
                       }
                     });
-                    print("Option1 After : $option1");
-                    print("Count while 1: $count");
+                   
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -284,7 +268,7 @@ class _InvestScreenState extends State<InvestScreen> {
                             }),
                         Flexible(
                           child: Text(
-                            "Bank FD’s / RD’s",
+                            "Confidence",
                             style:
                                 TextStyle(fontFamily: "oxygen", fontSize: 18),
                           ),
@@ -364,7 +348,7 @@ class _InvestScreenState extends State<InvestScreen> {
                             }),
                         Flexible(
                           child: Text(
-                            "Gold",
+                            "Trustworthiness",
                             style:
                                 TextStyle(fontFamily: "oxygen", fontSize: 18),
                           ),
@@ -438,7 +422,7 @@ class _InvestScreenState extends State<InvestScreen> {
                             }),
                         Flexible(
                           child: Text(
-                            "Real estate",
+                            "Integrity",
                             style:
                                 TextStyle(fontFamily: "oxygen", fontSize: 18),
                           ),
@@ -512,7 +496,7 @@ class _InvestScreenState extends State<InvestScreen> {
                             }),
                         Flexible(
                           child: Text(
-                            "Equities",
+                            "Compassion",
                             style:
                                 TextStyle(fontFamily: "oxygen", fontSize: 18),
                           ),
@@ -586,7 +570,377 @@ class _InvestScreenState extends State<InvestScreen> {
                             }),
                         Flexible(
                           child: Text(
-                            "Cryptocurrencies & NFT’s",
+                            "Emotional Availability",
+                            style:
+                                TextStyle(fontFamily: "oxygen", fontSize: 18),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (option6) {
+                        count--;
+                        option6 = !option6;
+                        return;
+                      }
+                      if (count == 2 && !option6) {
+                        showToast(
+                          " You can select maximum 2 options at a time! ",
+                          position: ToastPosition.bottom,
+                          constraints: BoxConstraints(
+                            minHeight: 30,
+                          ),
+                          backgroundColor: Color.fromRGBO(182, 102, 210, 1),
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "oxygen",
+                          ),
+                        );
+                        return;
+                      } else if (count < 2) {
+                        option6 = !option6;
+                        count++;
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Color.fromRGBO(182, 102, 210, 1),
+                            value: option6,
+                            onChanged: (val) {
+                              setState(() {
+                                if (option6) {
+                                  count--;
+                                  option6 = val!;
+                                  return;
+                                }
+                                if (count == 2 && !option6) {
+                                  showToast(
+                                    " You can select maximum 2 options at a time! ",
+                                    position: ToastPosition.bottom,
+                                    constraints: BoxConstraints(
+                                      minHeight: 30,
+                                    ),
+                                    backgroundColor:
+                                        Color.fromRGBO(182, 102, 210, 1),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "oxygen",
+                                    ),
+                                  );
+                                  return;
+                                } else if (count < 2) {
+                                  option6 = val!;
+                                  count++;
+                                }
+                              });
+                            }),
+                        Flexible(
+                          child: Text(
+                            "Respect",
+                            style:
+                                TextStyle(fontFamily: "oxygen", fontSize: 18),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (option7) {
+                        count--;
+                        option7 = !option7;
+                        return;
+                      }
+                      if (count == 2 && !option7) {
+                        showToast(
+                          " You can select maximum 2 options at a time! ",
+                          position: ToastPosition.bottom,
+                          constraints: BoxConstraints(
+                            minHeight: 30,
+                          ),
+                          backgroundColor: Color.fromRGBO(182, 102, 210, 1),
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "oxygen",
+                          ),
+                        );
+                        return;
+                      } else if (count < 2) {
+                        option7 = !option7;
+                        count++;
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Color.fromRGBO(182, 102, 210, 1),
+                            value: option7,
+                            onChanged: (val) {
+                              setState(() {
+                                if (option7) {
+                                  count--;
+                                  option7 = val!;
+                                  return;
+                                }
+                                if (count == 2 && !option7) {
+                                  showToast(
+                                    " You can select maximum 2 options at a time! ",
+                                    position: ToastPosition.bottom,
+                                    constraints: BoxConstraints(
+                                      minHeight: 30,
+                                    ),
+                                    backgroundColor:
+                                        Color.fromRGBO(182, 102, 210, 1),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "oxygen",
+                                    ),
+                                  );
+                                  return;
+                                } else if (count < 2) {
+                                  option7 = val!;
+                                  count++;
+                                }
+                              });
+                            }),
+                        Flexible(
+                          child: Text(
+                            "Sense of Humor",
+                            style:
+                                TextStyle(fontFamily: "oxygen", fontSize: 18),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (option8) {
+                        count--;
+                        option8 = !option8;
+                        return;
+                      }
+                      if (count == 2 && !option8) {
+                        showToast(
+                          " You can select maximum 2 options at a time! ",
+                          position: ToastPosition.bottom,
+                          constraints: BoxConstraints(
+                            minHeight: 30,
+                          ),
+                          backgroundColor: Color.fromRGBO(182, 102, 210, 1),
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "oxygen",
+                          ),
+                        );
+                        return;
+                      } else if (count < 2) {
+                        option8 = !option8;
+                        count++;
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Color.fromRGBO(182, 102, 210, 1),
+                            value: option8,
+                            onChanged: (val) {
+                              setState(() {
+                                if (option8) {
+                                  count--;
+                                  option8 = val!;
+                                  return;
+                                }
+                                if (count == 2 && !option8) {
+                                  showToast(
+                                    " You can select maximum 2 options at a time! ",
+                                    position: ToastPosition.bottom,
+                                    constraints: BoxConstraints(
+                                      minHeight: 30,
+                                    ),
+                                    backgroundColor:
+                                        Color.fromRGBO(182, 102, 210, 1),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "oxygen",
+                                    ),
+                                  );
+                                  return;
+                                } else if (count < 2) {
+                                  option8 = val!;
+                                  count++;
+                                }
+                              });
+                            }),
+                        Flexible(
+                          child: Text(
+                            "Maturity",
+                            style:
+                                TextStyle(fontFamily: "oxygen", fontSize: 18),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (option9) {
+                        count--;
+                        option9 = !option9;
+                        return;
+                      }
+                      if (count == 2 && !option9) {
+                        showToast(
+                          " You can select maximum 2 options at a time! ",
+                          position: ToastPosition.bottom,
+                          constraints: BoxConstraints(
+                            minHeight: 30,
+                          ),
+                          backgroundColor: Color.fromRGBO(182, 102, 210, 1),
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "oxygen",
+                          ),
+                        );
+                        return;
+                      } else if (count < 2) {
+                        option9 = !option9;
+                        count++;
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Color.fromRGBO(182, 102, 210, 1),
+                            value: option9,
+                            onChanged: (val) {
+                              setState(() {
+                                if (option9) {
+                                  count--;
+                                  option9 = val!;
+                                  return;
+                                }
+                                if (count == 2 && !option9) {
+                                  showToast(
+                                    " You can select maximum 2 options at a time! ",
+                                    position: ToastPosition.bottom,
+                                    constraints: BoxConstraints(
+                                      minHeight: 30,
+                                    ),
+                                    backgroundColor:
+                                        Color.fromRGBO(182, 102, 210, 1),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "oxygen",
+                                    ),
+                                  );
+                                  return;
+                                } else if (count < 2) {
+                                  option9 = val!;
+                                  count++;
+                                }
+                              });
+                            }),
+                        Flexible(
+                          child: Text(
+                            "Ambitious",
+                            style:
+                                TextStyle(fontFamily: "oxygen", fontSize: 18),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (option10) {
+                        count--;
+                        option10 = !option10;
+                        return;
+                      }
+                      if (count == 2 && !option10) {
+                        showToast(
+                          " You can select maximum 2 options at a time! ",
+                          position: ToastPosition.bottom,
+                          constraints: BoxConstraints(
+                            minHeight: 30,
+                          ),
+                          backgroundColor: Color.fromRGBO(182, 102, 210, 1),
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "oxygen",
+                          ),
+                        );
+                        return;
+                      } else if (count < 2) {
+                        option10 = !option10;
+                        count++;
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Color.fromRGBO(182, 102, 210, 1),
+                            value: option10,
+                            onChanged: (val) {
+                              setState(() {
+                                if (option10) {
+                                  count--;
+                                  option10 = val!;
+                                  return;
+                                }
+                                if (count == 2 && !option10) {
+                                  showToast(
+                                    " You can select maximum 2 options at a time! ",
+                                    position: ToastPosition.bottom,
+                                    constraints: BoxConstraints(
+                                      minHeight: 30,
+                                    ),
+                                    backgroundColor:
+                                        Color.fromRGBO(182, 102, 210, 1),
+                                    textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "oxygen",
+                                    ),
+                                  );
+                                  return;
+                                } else if (count < 2) {
+                                  option10 = val!;
+                                  count++;
+                                }
+                              });
+                            }),
+                        Flexible(
+                          child: Text(
+                            "Family Oriented",
                             style:
                                 TextStyle(fontFamily: "oxygen", fontSize: 18),
                           ),

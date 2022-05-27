@@ -100,7 +100,7 @@ class _BorrowingMoneyScreenState extends State<BorrowingMoneyScreen> {
                     radius: 20.0,
                     lineWidth: 2.0,
                     percent: 1,
-                    center: Text("6/6"),
+                    center: Text("4/4"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   )
                 ),
@@ -139,7 +139,7 @@ class _BorrowingMoneyScreenState extends State<BorrowingMoneyScreen> {
                             radius: 20.0,
                             lineWidth: 2.0,
                             percent: 1,
-                            center: Text("6/6"),
+                            center: Text("4/4"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

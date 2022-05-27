@@ -104,7 +104,8 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                     fontSize: 32,
                   ),
                   gradientType: GradientType.linear,
-                  gradientDirection: GradientDirection.ttb,
+                  gradientDirection: GradientDirection.ltr,
+
                   radius: .4,
                   colors: [
                     Color.fromRGBO(182, 102, 210, 1),
@@ -145,12 +146,9 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                     ),
                   )
                 ]),
-                image: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SvgPicture.asset(
-                    "assets/images/slide_1.svg",
-                    width: double.infinity,
-                  ),
+                image: SvgPicture.asset(
+                  "assets/images/slide_1.svg",
+                  width: double.infinity,
                 ),
               ),
               PageViewModel(
@@ -182,7 +180,7 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                     fontSize: 32,
                   ),
                   gradientType: GradientType.linear,
-                  gradientDirection: GradientDirection.ttb,
+                  gradientDirection: GradientDirection.ltr,
                   radius: .4,
                   colors: [
                     Color.fromRGBO(182, 102, 210, 1),
@@ -237,7 +235,7 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                     fontSize: 32,
                   ),
                   gradientType: GradientType.linear,
-                  gradientDirection: GradientDirection.ttb,
+                  gradientDirection: GradientDirection.ltr,
                   radius: .4,
                   colors: [
                     Color.fromRGBO(182, 102, 210, 1),
@@ -335,7 +333,7 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                     fontSize: 32,
                   ),
                   gradientType: GradientType.linear,
-                  gradientDirection: GradientDirection.ttb,
+                  gradientDirection: GradientDirection.ltr,
                   radius: .4,
                   colors: [
                     Color.fromRGBO(182, 102, 210, 1),
@@ -382,12 +380,13 @@ class _OnBoardingScreensState extends State<OnBoardingScreens> {
                 ]),
               ),
             ],
-            showSkipButton: true,
+            showSkipButton: false,
             showNextButton: true,
-            showBackButton: false,
+            showBackButton: true,
             showDoneButton: false,
-            skip: Text(
-              "Skip",
+            
+            back: Text(
+              "Previous",
               style: TextStyle(
                 fontFamily: "oxygen",
                 fontSize: 16,

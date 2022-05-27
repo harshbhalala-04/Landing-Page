@@ -66,7 +66,7 @@ class _AuthPageState extends State<AuthPage> {
 
       name = _user!.displayName;
       userEmail = _user!.email;
-      DataBase().createUserByEmail(userEmail!);
+      DataBase().createUserByEmail(phoneController.text, userEmail!);
       Navigator.pushNamed(context, '/main_info/');
     }
 
@@ -119,21 +119,63 @@ class _AuthPageState extends State<AuthPage> {
               deviceSize.width < 800 ? deviceSize.width : deviceSize.width / 4,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  children: [
-                    Text(
-                      "OTP Verification",
-                      style: TextStyle(
-                        fontFamily: "oxygen",
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
+              isOtpVerify
+                  ? Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "OTP Verification",
+                            style: TextStyle(
+                              fontFamily: "oxygen",
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Authentication",
+                            style: TextStyle(
+                              fontFamily: "oxygen",
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                    isOtpVerify ? Container() : SizedBox(height: 20,),
+              isOtpVerify
+                  ? Container()
+                  : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                        children: [
+                          Text(
+                            "Phone number ",
+                            style: TextStyle(
+                                fontFamily: "oxygen",
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "*",
+                            style: TextStyle(
+                                color: Color.fromRGBO(182, 102, 210, 1),
+                                fontFamily: "oxygen",
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                  ),
+                  isOtpVerify ? Container() : SizedBox(height: 10,),
               isOtpVerify
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -164,27 +206,23 @@ class _AuthPageState extends State<AuthPage> {
                   children: [
                     isOtpVerify
                         ? Text(
-                            "OTP",
+                            "OTP ",
                             style: TextStyle(
                                 fontFamily: "oxygen",
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
                           )
-                        : Text(
-                            "Phone number",
+                        : Container(),
+                    isOtpVerify
+                        ? Text(
+                            "*",
                             style: TextStyle(
+                                color: Color.fromRGBO(182, 102, 210, 1),
                                 fontFamily: "oxygen",
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
-                          ),
-                    Text(
-                      "*",
-                      style: TextStyle(
-                          color: Color.fromRGBO(182, 102, 210, 1),
-                          fontFamily: "oxygen",
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    )
+                          )
+                        : Container(),
                   ],
                 ),
               ),
@@ -211,23 +249,23 @@ class _AuthPageState extends State<AuthPage> {
                         children: [
                           TextField(
                             onChanged: (val) {
-                              if(val.length != 10) {
+                              if (val.length != 10) {
                                 setState(() {
                                   phoneField = false;
                                   isButtonActive = false;
                                 });
                               }
-                              if(val.length == 10) {
+                              if (val.length == 10) {
                                 setState(() {
                                   phoneField = true;
-                                  if(phoneField && emailField) {
+                                  if (phoneField && emailField) {
                                     isButtonActive = true;
                                   }
                                 });
                               }
                               _phoneVal = val;
                             },
-                             keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.phone,
                             controller: phoneController,
                             decoration: InputDecoration(
                               hintText: "Ten digit number",
@@ -297,7 +335,7 @@ class _AuthPageState extends State<AuthPage> {
                             children: [
                               Flexible(
                                   child: Text(
-                                "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.",
+                                "You will receive an access link here when the platform launches.",
                                 style: TextStyle(
                                   fontFamily: "oxygen",
                                   fontSize: 16,
@@ -312,19 +350,21 @@ class _AuthPageState extends State<AuthPage> {
                           TextFormField(
                             controller: emailController,
                             onChanged: (val) {
-                              if(val == "") {
+                              if (val == "") {
                                 setState(() {
                                   emailField = false;
                                   isButtonActive = false;
                                 });
                               }
-                              if(val != "") {
+                              if (val != "") {
                                 // print(emailController.text);
-                                bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(val);
-                                if(emailValid) {
+                                bool emailValid = RegExp(
+                                        r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                                    .hasMatch(val);
+                                if (emailValid) {
                                   setState(() {
                                     emailField = true;
-                                    if(phoneField && emailField) {
+                                    if (phoneField && emailField) {
                                       isButtonActive = true;
                                     }
                                   });
@@ -333,7 +373,6 @@ class _AuthPageState extends State<AuthPage> {
                             },
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              
                               hintText: "Your email",
                               hintStyle: TextStyle(
                                 fontFamily: "oxygen",
@@ -443,7 +482,7 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                           onPressed: () async {
-                            if(!isButtonActive) {
+                            if (!isButtonActive) {
                               return;
                             }
                             setState(() {
@@ -593,7 +632,7 @@ class _AuthPageState extends State<AuthPage> {
     if (userCredential.additionalUserInfo!.isNewUser) {
       // prefs.setString("phoneNo", _phoneVal);
       prefs.setString("uid", userCredential.user!.uid);
-      DataBase().createUser(_phoneVal);
+      DataBase().createUser(_phoneVal, emailController.text);
       Navigator.pushNamed(context, '/main_info/');
       setState(() {
         isLoading = false;

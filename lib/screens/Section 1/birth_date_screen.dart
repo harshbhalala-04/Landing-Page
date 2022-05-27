@@ -153,8 +153,8 @@ class _BirthDateScreenState extends State<BirthDateScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 6 / 11,
-                    center: Text("6/11"),
+                    percent: 4 / 11,
+                    center: Text("4/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -192,8 +192,8 @@ class _BirthDateScreenState extends State<BirthDateScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 6 / 11,
-                            center: Text("6/11"),
+                            percent: 4 / 11,
+                            center: Text("4/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

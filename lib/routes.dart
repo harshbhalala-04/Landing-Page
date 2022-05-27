@@ -8,7 +8,9 @@ import 'package:gmlandingpage/screens/Section%201/birth_date_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/gender_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/home_town_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/name_screen.dart';
+import 'package:gmlandingpage/screens/Section%201/quality_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/relationship_status_screen.dart';
+import 'package:gmlandingpage/screens/Section%201/restaurant_screen.dart';
 import 'package:gmlandingpage/screens/Section%201/sec1IntroScreen.dart';
 import 'package:gmlandingpage/screens/Section%202/income_screen.dart';
 import 'package:gmlandingpage/screens/Section%202/income_source_screen.dart';
@@ -17,9 +19,11 @@ import 'package:gmlandingpage/screens/Section%202/sec2IntroScreen.dart';
 import 'package:gmlandingpage/screens/auth_page.dart';
 import 'package:gmlandingpage/home.dart';
 import 'package:gmlandingpage/screens/feed_screen.dart';
+import 'package:gmlandingpage/screens/location_test_screen.dart';
 import 'package:gmlandingpage/screens/main_info_screen.dart';
 import 'package:gmlandingpage/screens/movies_question_page.dart';
 import 'package:gmlandingpage/screens/onboarding_screens.dart';
+import 'package:gmlandingpage/screens/refer_screen.dart';
 import 'package:gmlandingpage/screens/registration_page.dart';
 import 'package:gmlandingpage/screens/slider_question.dart';
 import 'package:gmlandingpage/screens/splash_route.dart';
@@ -110,7 +114,7 @@ class Flurorouter {
   static Handler _homeTownHandler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           HomeTownScreen());
-  
+
   static Handler _sec2Que2Handler = Handler(
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           QualificationScreen());
@@ -203,7 +207,31 @@ class Flurorouter {
       handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           OnBoardingScreens());
 
+  static Handler _locationTestHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          LocationTestScreen());
+
+  static Handler _restaurantHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          RestaurantScreen());
+
+  static Handler _referHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          ReferScreen());
+
+  static Handler _qualityHandler = Handler(
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          QualityScreen());
+
   static void setUpRouter() {
+    router.define('/quality/',
+        handler: _qualityHandler, transitionType: TransitionType.fadeIn);
+    router.define('/refer/',
+        handler: _referHandler, transitionType: TransitionType.fadeIn);
+    router.define('/restaurant/',
+        handler: _restaurantHandler, transitionType: TransitionType.fadeIn);
+    router.define('/location_test/',
+        handler: _locationTestHandler, transitionType: TransitionType.fadeIn);
     router.define('/onboarding/',
         handler: _onBoardingHandler, transitionType: TransitionType.fadeIn);
     router.define('/registration/',
@@ -232,10 +260,10 @@ class Flurorouter {
         handler: _nameHandler, transitionType: TransitionType.fadeIn);
     router.define('/gender/',
         handler: _genderHandler, transitionType: TransitionType.fadeIn);
-  
+
     router.define('/location/',
         handler: _homeTownHandler, transitionType: TransitionType.fadeIn);
-   
+
     router.define('/relationship_status/',
         handler: _relationshipHandler, transitionType: TransitionType.fadeIn);
 

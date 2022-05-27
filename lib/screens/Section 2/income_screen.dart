@@ -102,7 +102,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 0.8,
+                    percent: 4/5,
                     center: Text("4/5"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
@@ -141,7 +141,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 0.8,
+                            percent: 4/5,
                             center: Text("4/5"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),

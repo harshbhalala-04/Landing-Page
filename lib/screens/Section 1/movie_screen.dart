@@ -48,7 +48,7 @@ class _MovieScreenState extends State<MovieScreen> {
           });
     }
     DataBase().setShowPage(12);
-    Navigator.pushNamed(context, '/professional_intro/');
+    Navigator.pushNamed(context, '/quality/');
   }
 
   @override
@@ -78,8 +78,8 @@ class _MovieScreenState extends State<MovieScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 1,
-                    center: Text("11/11"),
+                    percent: 10/11,
+                    center: Text("10/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -117,8 +117,8 @@ class _MovieScreenState extends State<MovieScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 1,
-                            center: Text("11/11"),
+                            percent: 10/11,
+                            center: Text("10/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],
@@ -176,12 +176,14 @@ class _MovieScreenState extends State<MovieScreen> {
                       Icons.info_outline,
                       color: Color.fromRGBO(51, 51, 51, 1),
                     ),
-                    Text(
-                      "Minimum 1 movie is required. You can add more later.",
-                      style: TextStyle(
-                        fontFamily: "oxygen",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                    Flexible(
+                      child: Text(
+                        "Minimum 1 movie is required. You can add more later.",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ],
@@ -193,8 +195,8 @@ class _MovieScreenState extends State<MovieScreen> {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     )),
                     context: context,
                     isDismissible: true,
@@ -257,8 +259,8 @@ class _MovieScreenState extends State<MovieScreen> {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     )),
                     context: context,
                     isDismissible: true,
@@ -319,8 +321,8 @@ class _MovieScreenState extends State<MovieScreen> {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     )),
                     context: context,
                     isDismissible: true,

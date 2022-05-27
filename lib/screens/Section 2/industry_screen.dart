@@ -147,8 +147,8 @@ class _IndustryScreenState extends State<IndustryScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 0.6,
-                    center: Text("3/5"),
+                    percent: 1/5,
+                    center: Text("1/5"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -186,8 +186,8 @@ class _IndustryScreenState extends State<IndustryScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 0.6,
-                            center: Text("3/5"),
+                            percent: 1/5,
+                            center: Text("1/5"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

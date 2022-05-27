@@ -100,7 +100,7 @@ class _QualificationScreenState extends State<QualificationScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 0.4,
+                    percent: 2/5,
                     center: Text("2/5"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
@@ -139,7 +139,7 @@ class _QualificationScreenState extends State<QualificationScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 0.4,
+                            percent: 2/5,
                             center: Text("2/5"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),

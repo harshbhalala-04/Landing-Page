@@ -43,8 +43,18 @@ class _FeedScreenState extends State<FeedScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Spacer(),
-                Image.asset("assets/images/rocket.png"),
-                
+                TextButton(
+                  onPressed: () {
+                    controller!.play();
+                  },
+                  child: Text(
+                    "🎉",
+                    style: TextStyle(
+                        fontFamily: "oxygen",
+                        fontWeight: FontWeight.w700,
+                        fontSize: 50),
+                  ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -99,8 +109,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     Image.asset("assets/images/insta.png"),
                   ],
                 ),
-               Spacer(),
-
+                Spacer(),
                 Text(
                   "Like the concept?",
                   style: TextStyle(

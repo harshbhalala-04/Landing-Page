@@ -5,21 +5,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DataBase {
   User? user = FirebaseAuth.instance.currentUser;
 
-  void createUser(String phoneNo) async {
+  void createUser(String phoneNo, String email) async {
     if (user != null) {
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(user!.uid)
-          .set({"phoneNumber": phoneNo, "showPage": 0, "allAnswer": false});
+      FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
+        "phoneNumber": phoneNo,
+        "showPage": 0,
+        "allAnswer": false,
+        "uid": user!.uid,
+        "email": email
+      });
     }
   }
 
-  void createUserByEmail(String email) async {
+  void createUserByEmail(String phoneNo, String email) async {
     if (user != null) {
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(user!.uid)
-          .set({"email": email, "showPage": 0, "allAnswer": false});
+      FirebaseFirestore.instance.collection("users").doc(user!.uid).set({
+        "email": email,
+        "showPage": 0,
+        "allAnswer": false,
+        "uid": user!.uid,
+        "phoneNumber": phoneNo
+      });
     }
   }
 
@@ -98,8 +104,6 @@ class DataBase {
     prefs.setDouble("Investments", val1);
   }
 
-  
-
   void setLocation(String hometown, String currentCity) async {
     FirebaseFirestore.instance
         .collection("users")
@@ -108,6 +112,15 @@ class DataBase {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("hometown", hometown);
     prefs.setString("currentCity", currentCity);
+  }
+
+  void setRestaurant(String restaurant) async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .update({"restaurant": restaurant});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("restaurant", restaurant);
   }
 
   void setHeight(String height, String feet, String inches) async {
@@ -193,6 +206,15 @@ class DataBase {
     prefs.setStringList("investment", investment);
   }
 
+  void setQuality(List<String> quality) async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .update({"quality": quality});
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList("quality", quality);
+  }
+
   void setDOB(String date, String month, String year) async {
     FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
       "birthdate": date + "/" + month + "/" + year,
@@ -267,5 +289,23 @@ class DataBase {
         .update({"wedding": wedding});
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("wedding", wedding);
+  }
+
+  void setReferral(String phoneNo) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .where("phoneNumber", isEqualTo: phoneNo)
+        .get()
+        .then((val) {
+      String otherUid = val.docs[0].data()['uid'];
+      FirebaseFirestore.instance.collection("users").doc(otherUid).update({
+        "referList": FieldValue.arrayUnion([phoneNo])
+      });
+      FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
+      "isByRefer": true,
+      "referBy": otherUid
+    });
+    });
+    
   }
 }

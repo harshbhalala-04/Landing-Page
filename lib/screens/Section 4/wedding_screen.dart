@@ -100,8 +100,8 @@ class _WeddingScreenState extends State<WeddingScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 3 / 3,
-                    center: Text("3/3"),
+                    percent: 1 / 3,
+                    center: Text("1/3"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -139,8 +139,8 @@ class _WeddingScreenState extends State<WeddingScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 1,
-                            center: Text("3/3"),
+                            percent: 1/3,
+                            center: Text("1/3"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

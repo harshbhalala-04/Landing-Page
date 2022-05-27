@@ -94,8 +94,8 @@ class _HeightScreenState extends State<HeightScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 8 / 11,
-                    center: Text("8/11"),
+                    percent: 6 / 11,
+                    center: Text("6/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -133,8 +133,8 @@ class _HeightScreenState extends State<HeightScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 8 / 11,
-                            center: Text("8/11"),
+                            percent: 6 / 11,
+                            center: Text("6/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

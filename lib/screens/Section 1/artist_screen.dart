@@ -92,8 +92,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 10 / 11,
-                    center: Text("10/11"),
+                    percent: 9 / 11,
+                    center: Text("9/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -131,8 +131,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 10 / 11,
-                            center: Text("10/11"),
+                            percent: 9 / 11,
+                            center: Text("9/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],
@@ -141,7 +141,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  "Who are your three favourite artists?",
+                  "Name three favorite musical artists?",
                   style: TextStyle(
                     fontFamily: "oxygen",
                     fontSize: 24,
@@ -178,8 +178,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     )),
                     context: context,
                     isDismissible: true,
@@ -234,8 +234,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     )),
                     context: context,
                     isDismissible: true,
@@ -294,8 +294,8 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     )),
                     context: context,
                     isDismissible: true,

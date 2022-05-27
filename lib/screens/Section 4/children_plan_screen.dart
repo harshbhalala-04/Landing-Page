@@ -55,7 +55,7 @@ class _ChildrenPlanScreenState extends State<ChildrenPlanScreen> {
 
     DataBase().setShowPage(27);
     DataBase().setChildrenPlan(option);
-    Navigator.pushNamed(context, '/feed/');
+    Navigator.pushNamed(context, '/refer/');
   }
 
   fetchChildrenPlan() async {
@@ -108,8 +108,8 @@ class _ChildrenPlanScreenState extends State<ChildrenPlanScreen> {
                   child:  CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 1/3,
-                    center: Text("1/3"),
+                    percent: 1,
+                    center: Text("3/3"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -147,8 +147,8 @@ class _ChildrenPlanScreenState extends State<ChildrenPlanScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 1/3,
-                            center: Text("1/3"),
+                            percent: 1,
+                            center: Text("3/3"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

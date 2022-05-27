@@ -14,69 +14,76 @@ class MyConfettiWidget extends StatefulWidget {
   State<MyConfettiWidget> createState() => _MyConfettiWidgetState();
 }
 
+ConfettiController? controller;
+
+startConfetti() {
+  print("Started");
+  controller = ConfettiController(duration: Duration(seconds: 2));
+  controller!.play();
+}
+
 class _MyConfettiWidgetState extends State<MyConfettiWidget> {
-  ConfettiController? controller ;
   @override
   void initState() {
+    startConfetti();
     // TODO: implement initState
-    controller = ConfettiController(duration: Duration(seconds: 2));
-    controller!.play();
+    // controller = ConfettiController(duration: Duration(seconds: 2));
+    // controller!.play();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: ConfettiWidget(
-            numberOfParticles: 20,
-            minimumSize: Size(10, 10),
-            confettiController: controller!,
-            blastDirection: pi/2,
-            colors: [
-              Color.fromRGBO(182, 102, 210, 1),
-              Colors.red,
-              Colors.blue,
-              Colors.orange,
-              Colors.lightBlue
-            ],
-          ),
+    return Stack(children: [
+      Align(
+        alignment: Alignment.topCenter,
+        child: ConfettiWidget(
+          numberOfParticles: 20,
+          minimumSize: Size(10, 10),
+          confettiController: controller!,
+          blastDirection: pi / 2,
+          colors: [
+            Color.fromRGBO(182, 102, 210, 1),
+            Colors.red,
+            Colors.blue,
+            Colors.orange,
+            Colors.lightBlue
+          ],
         ),
-         Align(
-          alignment: Alignment.centerLeft,
-          child: ConfettiWidget(
-            numberOfParticles: 20,
-            minimumSize: Size(10, 10),
-            confettiController: controller!,
-            blastDirection: -pi/4,
-            colors: [
-              Color.fromRGBO(182, 102, 210, 1),
-              Colors.red,
-              Colors.blue,
-              Colors.orange,
-              Colors.lightBlue
-            ],
-          ),
+      ),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: ConfettiWidget(
+          numberOfParticles: 20,
+          minimumSize: Size(10, 10),
+          confettiController: controller!,
+          blastDirection: -pi / 4,
+          colors: [
+            Color.fromRGBO(182, 102, 210, 1),
+            Colors.red,
+            Colors.blue,
+            Colors.orange,
+            Colors.lightBlue
+          ],
         ),
-         Align(
-          alignment: Alignment.centerRight,
-          child: ConfettiWidget(
-            numberOfParticles: 20,
-            minimumSize: Size(10, 10),
-            confettiController: controller!,
-            blastDirection: pi,
-            colors: [
-              Color.fromRGBO(182, 102, 210, 1),
-              Colors.red,
-              Colors.blue,
-              Colors.orange,
-              Colors.lightBlue
-            ],
-          ),
+      ),
+      Align(
+        alignment: Alignment.centerRight,
+        child: ConfettiWidget(
+          numberOfParticles: 20,
+          minimumSize: Size(10, 10),
+          confettiController: controller!,
+          blastDirection: pi,
+          colors: [
+            Color.fromRGBO(182, 102, 210, 1),
+            Colors.red,
+            Colors.blue,
+            Colors.orange,
+            Colors.lightBlue
+          ],
         ),
-        widget.child,
-      ]
-    );
+      ),
+      widget.child,
+    ]);
   }
 }

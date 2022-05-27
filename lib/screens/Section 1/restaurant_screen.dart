@@ -1,36 +1,112 @@
-// ignore_for_file: unused_local_variable, prefer_const_constructors
+// ignore_for_file: unused_local_variable, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:gmlandingpage/place_model.dart';
+import 'package:gmlandingpage/screens/Section%201/movie_screen.dart';
 import 'package:gmlandingpage/services/database.dart';
+import 'package:location/location.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../model/restaurant_model.dart';
 import '../../widgets/button.dart';
+import 'package:geolocator/geolocator.dart' as geo;
+// import 'package:geocode/geocode.dart';
 
-class HomeTownScreen extends StatefulWidget {
-  const HomeTownScreen({Key? key}) : super(key: key);
+class RestaurantScreen extends StatefulWidget {
+  const RestaurantScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeTownScreen> createState() => _HomeTownScreenState();
+  State<RestaurantScreen> createState() => _RestaurantScreenState();
 }
 
-TextEditingController homeTownController = new TextEditingController();
+TextEditingController restaurantController = new TextEditingController();
 String searchQuery = "";
 bool isSearchString = false;
-List<PlaceModel> homePlaceList = [];
-TextEditingController currentCityController = new TextEditingController();
-List<PlaceModel> currentCityList = [];
-bool isHomeTownSelected = false;
-bool isCurrentCitySelected = false;
+List<RestaurantModel> restaurantList = [];
+// TextEditingController currentCityController = new TextEditingController();
+// List<PlaceModel> currentCityList = [];
+List<bool> isRestaurantSelected = [false, false, false];
+List<RestaurantModel> selectedRestaurant = [
+  RestaurantModel(),
+  RestaurantModel(),
+  RestaurantModel()
+];
 
-class _HomeTownScreenState extends State<HomeTownScreen> {
+// bool isCurrentCitySelected = false;
+Position? currentLocation;
+
+class _RestaurantScreenState extends State<RestaurantScreen> {
+  getUserLocation() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      print(_permissionGranted);
+      if (_permissionGranted != PermissionStatus.granted) {
+        String url = "https://ipinfo.io/json?token=7f711a25d04d32";
+        var myUri = Uri.parse(
+          url,
+        );
+        http.Response response = await http.get(
+          myUri,
+        );
+        if (response.statusCode == 200) {
+          String jsonData = response.body;
+          var decodeData = json.decode(jsonData);
+          print(decodeData);
+          setState(() {});
+        }
+      } else {
+        currentLocation = await Geolocator.getCurrentPosition(
+            desiredAccuracy: geo.LocationAccuracy.high);
+        setState(() {});
+      }
+    } else if (_permissionGranted == PermissionStatus.deniedForever) {
+      String url = "https://ipinfo.io/json?token=7f711a25d04d32";
+      var myUri = Uri.parse(
+        url,
+      );
+      http.Response response = await http.get(
+        myUri,
+      );
+      if (response.statusCode == 200) {
+        String jsonData = response.body;
+        var decodeData = json.decode(jsonData);
+        print(decodeData);
+        setState(() {});
+      }
+    } else {
+      currentLocation = await Geolocator.getCurrentPosition(
+          desiredAccuracy: geo.LocationAccuracy.high);
+      setState(() {});
+    }
+
+    // _locationData = await location.getLocation();
+
+    //  currentLocation = position;
+  }
+
   navigationFunction() {
-    if (homeTownController.text == "") {
+    if (selectedRestaurant.length < 1) {
       return showDialog(
           context: context,
           builder: (ctx) {
@@ -49,14 +125,14 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
             );
           });
     }
-    DataBase().setLocation(homeTownController.text, currentCityController.text);
-    Navigator.pushNamed(context, '/restaurant/');
+    DataBase().setRestaurant(restaurantController.text);
+    Navigator.pushNamed(context, '/artist/');
   }
 
   fetchHomeTown() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("hometown")) {
-      homeTownController.text = prefs.getString("hometown")!;
+    if (prefs.containsKey("restaurant")) {
+      restaurantController.text = prefs.getString("restaurant")!;
     }
 
     setState(() {});
@@ -65,7 +141,8 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    fetchHomeTown();
+    // fetchHomeTown();
+    getUserLocation();
     super.initState();
   }
 
@@ -97,8 +174,8 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 7 / 11,
-                    center: Text("7/11"),
+                    percent: 8 / 11,
+                    center: Text("8/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -137,8 +214,8 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 7 / 11,
-                            center: Text("7/11"),
+                            percent: 8 / 11,
+                            center: Text("8/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],
@@ -146,14 +223,44 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                     ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  "Home town",
-                  style: TextStyle(
-                    fontFamily: "oxygen",
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        "Choose your three favorite restaurants from “location”.",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: Color.fromRGBO(51, 51, 51, 1),
+                    ),
+                    Flexible(
+                      child: Text(
+                        "Minimum 1 restaurant is required. You can add more later.",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
               ),
               ListTile(
                 onTap: () {
@@ -177,28 +284,25 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                       return MyBottomSheetWidget(index: 0);
                     },
                   ).then((value) {
-                    setState(() {
-                      print(homeTownController.text);
-                      print(isHomeTownSelected);
-                    });
+                    setState(() {});
                   });
                 },
-                leading: SvgPicture.asset("assets/images/location.svg"),
-                title: isHomeTownSelected
-                    ? Text(homeTownController.text)
+                leading: SvgPicture.asset("assets/images/plus.svg"),
+                title: isRestaurantSelected[0]
+                    ? Text(selectedRestaurant[0].name!)
                     : Text(
-                        "Add a location",
+                        "Add a restaurant",
                         style: TextStyle(
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
                           fontSize: 18,
                         ),
                       ),
-                trailing: isHomeTownSelected
+                trailing: isRestaurantSelected[0]
                     ? IconButton(
                         onPressed: () {
                           setState(() {
-                            isHomeTownSelected = false;
+                            isRestaurantSelected[0] = false;
                           });
                         },
                         icon: Icon(Icons.cancel),
@@ -207,19 +311,10 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                         height: 0,
                       ),
               ),
-              SizedBox(height: 20,),
-                Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  "Current Location",
-                  style: TextStyle(
-                    fontFamily: "oxygen",
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+              SizedBox(
+                height: 10,
               ),
-               ListTile(
+              ListTile(
                 onTap: () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
@@ -241,27 +336,77 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
                       return MyBottomSheetWidget(index: 1);
                     },
                   ).then((value) {
-                    setState(() {
-                      
-                    });
+                    setState(() {});
                   });
                 },
-                leading: SvgPicture.asset("assets/images/location.svg"),
-                title: isCurrentCitySelected
-                    ? Text(currentCityController.text)
+                leading: SvgPicture.asset("assets/images/plus.svg"),
+                title: isRestaurantSelected[1]
+                    ? Text(selectedRestaurant[1].name!)
                     : Text(
-                        "Add a location",
+                        "Add a restaurant",
                         style: TextStyle(
                           fontFamily: "oxygen",
                           fontWeight: FontWeight.w400,
                           fontSize: 18,
                         ),
                       ),
-                trailing: isCurrentCitySelected
+                trailing: isRestaurantSelected[1]
                     ? IconButton(
                         onPressed: () {
                           setState(() {
-                            isCurrentCitySelected = false;
+                            isRestaurantSelected[1] = false;
+                          });
+                        },
+                        icon: Icon(Icons.cancel),
+                      )
+                    : SizedBox(
+                        height: 0,
+                      ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              ListTile(
+                onTap: () {
+                  showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    )),
+                    context: context,
+                    isDismissible: true,
+                    isScrollControlled: true,
+                    constraints: BoxConstraints(
+                      maxWidth: deviceSize.width < 800
+                          ? deviceSize.width
+                          : deviceSize.width / 4,
+                      maxHeight: deviceSize.height - 100,
+                      minHeight: deviceSize.height - 100,
+                    ),
+                    builder: (ctx) {
+                      return MyBottomSheetWidget(index: 2);
+                    },
+                  ).then((value) {
+                    setState(() {});
+                  });
+                },
+                leading: SvgPicture.asset("assets/images/plus.svg"),
+                title: isRestaurantSelected[2]
+                    ? Text(selectedRestaurant[2].name!)
+                    : Text(
+                        "Add a restaurant",
+                        style: TextStyle(
+                          fontFamily: "oxygen",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
+                      ),
+                trailing: isRestaurantSelected[2]
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isRestaurantSelected[2] = false;
                           });
                         },
                         icon: Icon(Icons.cancel),
@@ -289,8 +434,8 @@ class _HomeTownScreenState extends State<HomeTownScreen> {
 }
 
 class PredictionTile extends StatelessWidget {
-  final PlaceModel placePredictions;
-  PredictionTile({required this.placePredictions});
+  final RestaurantModel restaurantModel;
+  PredictionTile({required this.restaurantModel});
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +444,7 @@ class PredictionTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.add_location),
+              Icon(Icons.restaurant),
               SizedBox(
                 width: 14,
               ),
@@ -307,23 +452,16 @@ class PredictionTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    placePredictions.main_text == null
+                    restaurantModel.name == null
                         ? Text("")
                         : Text(
-                            placePredictions.main_text!,
+                            restaurantModel.name!,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 16),
                           ),
                     SizedBox(
                       height: 3,
                     ),
-                    placePredictions.secondary_text == null
-                        ? Text("")
-                        : Text(
-                            placePredictions.secondary_text!,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
                   ],
                 ),
               )
@@ -350,10 +488,22 @@ class RequestAssitant {
         url,
       );
       http.Response response = await http.get(myUri, headers: header);
+      print(response.body);
+      print("=====================");
       if (response.statusCode == 200) {
-        String jsonData = response.body;
-        var decodeData = json.decode(jsonData);
-        return decodeData;
+        final val = jsonDecode(response.body);
+        final List result = val["results"];
+        for (int i = 0; i < result.length; i++) {
+          print(result[i]['name']);
+          if (result[i]['photos'] != null) {
+            result[i]['photos'].forEach((v) {
+              print(v);
+            });
+          }
+        }
+        // String jsonData = response.body;
+        // var decodeData = json.decode(jsonData);
+        // return decodeData;
       } else {
         return "failed";
       }
@@ -376,29 +526,47 @@ class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
   void findPlace(String placeName) async {
     String mapKey = "AIzaSyClZMABTQghPL4az0xu-2qyeoEe-GDU2ZQ";
 
+    double radius = 100000;
+    String type = "restaurant";
+    String keyword = placeName;
+
+    double lat = currentLocation!.latitude;
+    double long = currentLocation!.longitude;
+
     String autoCompleteUrl =
-        "https://agile-ocean-18311.herokuapp.com/https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey";
+        "https://agile-ocean-18311.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$long&radius=$radius&type=$type&keyword=$keyword&key=$mapKey";
 
-    var res = await RequestAssitant.getRequest(autoCompleteUrl);
-
-    if (res == "failed") {
-      return;
+    var myUri = Uri.parse(
+      autoCompleteUrl,
+    );
+    http.Response response = await http.get(
+      myUri,
+    );
+    // print(response.body);
+    print("=====================");
+    if (response.statusCode == 200) {
+      final val = jsonDecode(response.body);
+      final List result = val["results"];
+      for (int i = 0; i < result.length; i++) {
+        restaurantList.add(RestaurantModel(
+            name: result[i]['name'], placeId: result[i]['place_id']));
+      }
+    } else {
+      // return "failed";
     }
-    
-
-    if (res["status"] == "OK") {
-      var predictions = res["predictions"];
-      print(predictions);
-      var placeList =
-          (predictions as List).map((e) => PlaceModel.fromJson(e)).toList();
-      setState(() {
-        if (widget.index == 0) {
-          homePlaceList = placeList;
-        } else {
-          currentCityList = placeList;
-        }
-      });
-    }
+    setState(() {});
+    // if (res["status"] == "OK") {
+    //   var predictions = res["predictions"];
+    //   var placeList =
+    //       (predictions as List).map((e) => PlaceModel.fromJson(e)).toList();
+    //   setState(() {
+    //     if (widget.index == 0) {
+    //       restaurantList = placeList;
+    //     } else {
+    //       restaurantList = placeList;
+    //     }
+    //   });
+    // }
   }
 
   @override
@@ -432,91 +600,45 @@ class _MyBottomSheetWidgetState extends State<MyBottomSheetWidget> {
                 } else {
                   setState(() {
                     isSearchString = false;
-                    if (widget.index == 0) {
-                      homePlaceList = [];
-                    } else {
-                      currentCityList = [];
-                    }
+                    restaurantList = [];
                   });
                 }
-                
-
-              
               },
             ),
           ),
-          widget.index == 0 && homePlaceList.length > 0
+          restaurantList.length > 0
               ? Padding(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListView.separated(
                     itemBuilder: (ctx, index) {
                       return InkWell(
                         onTap: () {
-                          if (homePlaceList[index].main_text != null &&
-                              homePlaceList[index].secondary_text != null) {
-                            homeTownController.text =
-                                homePlaceList[index].main_text! +
-                                    ", " +
-                                    homePlaceList[index].secondary_text!;
-                          } else {
-                            homeTownController.text =
-                                homePlaceList[index].main_text!;
+                          for (int i = 0; i < selectedMovies.length; i++) {
+                            if (restaurantList[index].placeId ==
+                                selectedRestaurant[i].placeId) {
+                              return;
+                            }
                           }
-                          print(homeTownController.text);
-                          homePlaceList = [];
-                          isHomeTownSelected = true;
-                          setState(() {
-                            
-                          });
+
+                          if (restaurantList[index].name != null) {
+                            selectedRestaurant[widget.index].name =
+                                restaurantList[index].name!;
+                          }
+
+                          restaurantList = [];
+                          isRestaurantSelected[widget.index] = true;
+                          setState(() {});
                           Navigator.pop(context);
                         },
                         child: PredictionTile(
-                          placePredictions: homePlaceList[index],
+                          restaurantModel: restaurantList[index],
                         ),
                       );
                     },
                     separatorBuilder: (ctx, index) {
                       return Divider();
                     },
-                    itemCount: homePlaceList.length,
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                  ),
-                )
-              : Container(),
-          widget.index == 1 && currentCityList.length > 0
-              ? Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListView.separated(
-                    itemBuilder: (ctx, index) {
-                      return InkWell(
-                        onTap: () {
-                          if (currentCityList[index].main_text != null &&
-                              currentCityList[index].secondary_text != null) {
-                            currentCityController.text =
-                                currentCityList[index].main_text! +
-                                    ", " +
-                                    currentCityList[index].secondary_text!;
-                          } else {
-                            currentCityController.text =
-                                currentCityList[index].main_text!;
-                          }
-                          isCurrentCitySelected = true;
-                          currentCityList = [];
-                          setState(() {
-                            
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: PredictionTile(
-                          placePredictions: currentCityList[index],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (ctx, index) {
-                      return Divider();
-                    },
-                    itemCount: currentCityList.length,
+                    itemCount: restaurantList.length,
                     shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
                   ),

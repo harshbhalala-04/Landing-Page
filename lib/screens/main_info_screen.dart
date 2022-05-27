@@ -119,7 +119,7 @@ class _MainInfoScreenState extends State<MainInfoScreen> {
                               ),
                             ),
                             subtitle: Text(
-                              "10 Questions",
+                              "11 Questions",
                               style: TextStyle(
                                 fontFamily: "oxygen",
                                 fontWeight: FontWeight.w400,
@@ -171,7 +171,7 @@ class _MainInfoScreenState extends State<MainInfoScreen> {
                               ),
                             ),
                             subtitle: Text(
-                              "6 Questions",
+                              "4 Questions",
                               style: TextStyle(
                                 fontFamily: "oxygen",
                                 fontWeight: FontWeight.w400,
@@ -197,7 +197,7 @@ class _MainInfoScreenState extends State<MainInfoScreen> {
                               ),
                             ),
                             subtitle: Text(
-                              "4 Questions",
+                              "3 Questions",
                               style: TextStyle(
                                 fontFamily: "oxygen",
                                 fontWeight: FontWeight.w400,

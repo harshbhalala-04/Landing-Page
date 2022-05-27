@@ -177,8 +177,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 7 / 11,
-                    center: Text("7/11"),
+                    percent: 3 / 11,
+                    center: Text("3/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -216,8 +216,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 7 / 11,
-                            center: Text("7/11"),
+                            percent: 3 / 11,
+                            center: Text("3/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

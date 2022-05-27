@@ -263,8 +263,8 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 9 / 11,
-                    center: Text("9/11"),
+                    percent: 5 / 11,
+                    center: Text("5/11"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -302,8 +302,8 @@ class _MotherToungueScreenState extends State<MotherToungueScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 9 / 11,
-                            center: Text("9/11"),
+                            percent: 5 / 11,
+                            center: Text("5/11"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],

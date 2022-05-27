@@ -49,7 +49,7 @@ class _StockInvestScreenState extends State<StockInvestScreen> {
     // DataBase().setGender(gender);
     DataBase().setInvestInStock(stockInvest);
     
-    Navigator.pushNamed(context, '/emergency_fund/');
+    Navigator.pushNamed(context, '/borrowing_money/');
   }
   fetchStockInvest() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -96,8 +96,8 @@ class _StockInvestScreenState extends State<StockInvestScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 3/6,
-                    center: Text("3/6"),
+                    percent: 3/4,
+                    center: Text("3/4"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),

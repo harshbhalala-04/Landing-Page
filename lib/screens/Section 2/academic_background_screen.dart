@@ -97,8 +97,8 @@ class _AcademicBackgroundScreenState extends State<AcademicBackgroundScreen> {
                   child: CircularPercentIndicator(
                     radius: 20.0,
                     lineWidth: 2.0,
-                    percent: 0.2,
-                    center: Text("1/5"),
+                    percent: 3/5,
+                    center: Text("3/5"),
                     progressColor: Color.fromRGBO(182, 102, 210, 1),
                   ),
                 ),
@@ -136,8 +136,8 @@ class _AcademicBackgroundScreenState extends State<AcademicBackgroundScreen> {
                           CircularPercentIndicator(
                             radius: 20.0,
                             lineWidth: 2.0,
-                            percent: 0.2,
-                            center: Text("1/5"),
+                            percent: 3/5,
+                            center: Text("3/5"),
                             progressColor: Color.fromRGBO(182, 102, 210, 1),
                           ),
                         ],
